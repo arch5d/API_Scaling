@@ -90,7 +90,7 @@ docker run --rm -i --cpus=8 --memory=8g --network host `
    grafana/k6 run /scripts/baseline.js
 ```
 
-The improved 8 GB k6 run completed with exit code 0 using the realistic full-dataset access pattern and zero-drop threshold. The current command targets the three-replica NGINX deployment on port 3000. Save the final numeric p95/p99/cache-counter summary from k6; do not use the earlier artificial 100-article hot-read metrics as a substitute.
+The single-instance improved 8 GB k6 run completed with exit code 0 using the realistic full-dataset access pattern and zero-drop threshold. The first full three-replica run through NGINX did not pass: 26,262 dropped iterations, 1.80% HTTP failures, p95 780.57 ms, and p99 4.63 s. NGINX was then tuned for higher concurrency and upstream keepalive. A retest still did not pass: 20,651 dropped iterations, 1.18% HTTP failures, p95 574.18 ms, and p99 1.03 s. NGINX kept serving its accepted connections throughout; the failures were k6 TCP connect-phase timeouts, pointing at the Docker Desktop port-forward path rather than the API or NGINX worker settings. A replica stopped during a 30 RPS smoked load produced zero dropped iterations and 0.00% failures (p95 12.41 ms, p99 15.43 ms). Replicated 1,000-RPS acceptance is not yet demonstrated.
 
 Stress mode now preallocates 300 VUs and allows up to 1,000 VUs. The larger Docker allocation gives k6 headroom to maintain the arrival rate without dynamically allocating VUs during the plateau.
 

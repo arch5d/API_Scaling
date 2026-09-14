@@ -15,8 +15,8 @@ export const options = {
       executor: 'ramping-arrival-rate',
       startRate: 10,
       timeUnit: '1s',
-        preAllocatedVUs: stress ? 300 : 50,
-        maxVUs: stress ? 1000 : 300,
+      preAllocatedVUs: stress ? 300 : 50,
+      maxVUs: stress ? 1000 : 300,
       stages: stress
         ? [
             { target: 250, duration: '30s' },
@@ -24,16 +24,16 @@ export const options = {
             { target: 0, duration: '30s' }
           ]
         : smoke
-        ? [
-            { target: 30, duration: '10s' },
-            { target: 30, duration: '20s' },
-            { target: 0, duration: '5s' }
-          ]
-        : [
-            { target: 100, duration: '2m' },
-            { target: 100, duration: '10m' },
-            { target: 0, duration: '1m' }
-          ]
+          ? [
+              { target: 30, duration: '10s' },
+              { target: 30, duration: '20s' },
+              { target: 0, duration: '5s' }
+            ]
+          : [
+              { target: 100, duration: '2m' },
+              { target: 100, duration: '10m' },
+              { target: 0, duration: '1m' }
+            ]
     }
   },
   thresholds: {
@@ -46,7 +46,7 @@ export const options = {
 export default function () {
   const roll = Math.random();
   let response;
-  if (roll < 0.80) {
+  if (roll < 0.8) {
     const articleId = realisticReads
       ? Math.min(100000, Math.floor(1 / Math.pow(1 - Math.random(), 1 / 0.8)))
       : Math.floor(Math.random() * 100000) + 1;
