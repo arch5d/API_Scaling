@@ -8,6 +8,12 @@ import { z } from 'zod';
 const { Pool } = pg;
 const { Counter, Histogram, Registry } = client;
 
+const CACHE_CONTROL = 'public, max-age=60, stale-while-revalidate=30';
+const FILL_LOCK_TTL_MS = 5000;
+const WAIT_FOR_FILL_MS = 2000;
+const RELEASE_LOCK_SCRIPT =
+  "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+
 const articleInput = z.object({
   title: z.string().trim().min(1).max(200),
   slug: z
@@ -41,7 +47,14 @@ export async function buildApp({
   const app = Fastify({ logger });
   await app.register(sensible);
 
+  app.addHook('onListen', async () => {
+    app.server.keepAliveTimeout = 60_000;
+    app.server.headersTimeout = 61_000;
+    app.server.requestTimeout = 65_000;
+  });
+
   let cacheAvailable = cache != null;
+  const fillsInFlight = new Map();
 
   const metricsRegistry = new Registry();
   client.collectDefaultMetrics({ register: metricsRegistry });
@@ -101,6 +114,68 @@ export async function buildApp({
     }
   };
 
+  const lockKey = (key) => `${key}:fill-lock`;
+
+  const acquireFillLock = async (key, token) => {
+    if (!cacheAvailable || !cache) return false;
+    try {
+      return (await cache.set(lockKey(key), token, { NX: true, PX: FILL_LOCK_TTL_MS })) === 'OK';
+    } catch (error) {
+      cacheAvailable = false;
+      app.log.warn({ error }, 'redis lock failed; using postgres');
+      return false;
+    }
+  };
+
+  const releaseFillLock = async (key, token) => {
+    if (!cacheAvailable || typeof cache?.eval !== 'function') return;
+    try {
+      await cache.eval(RELEASE_LOCK_SCRIPT, {
+        keys: [lockKey(key)],
+        arguments: [token]
+      });
+    } catch (error) {
+      cacheAvailable = false;
+      app.log.warn({ error }, 'redis unlock failed; using postgres');
+    }
+  };
+
+  // Coalesce concurrent misses for the same key. The Redis fill lock also deduplicates
+  // across replicas; local callers share a single Promise, remote callers wait for the cache.
+  const loadArticle = async (key, fetchFromDatabase) => {
+    const existing = fillsInFlight.get(key);
+    if (existing) return existing;
+
+    const task = (async () => {
+      const token = `${os.hostname()}:${process.pid}:${Date.now()}:${Math.random()}`;
+      const locked = await acquireFillLock(key, token);
+      if (!locked && cacheAvailable) {
+        const deadline = Date.now() + WAIT_FOR_FILL_MS;
+        while (Date.now() < deadline) {
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          const filled = await readCache(key);
+          if (filled) return JSON.parse(filled);
+        }
+      }
+      try {
+        const article = await fetchFromDatabase();
+        if (article) await writeCache(key, JSON.stringify(article));
+        return article;
+      } finally {
+        if (locked) await releaseFillLock(key, token);
+      }
+    })();
+
+    fillsInFlight.set(key, task);
+    try {
+      return await task;
+    } finally {
+      fillsInFlight.delete(key);
+    }
+  };
+
+  const articleEtag = (article) => `"${article.id}-${article.updatedAt}"`;
+
   app.get('/', async (_request, reply) => {
     return reply.send({
       service: 'api-scaling-blog',
@@ -143,18 +218,30 @@ export async function buildApp({
     if (!Number.isInteger(id) || id < 1) return reply.badRequest('id must be a positive integer');
 
     const cacheKey = `article:${id}`;
+    let article;
+    let cacheStatus;
     const cached = await readCache(cacheKey);
-    if (cached) return reply.header('X-Cache', 'HIT').send(JSON.parse(cached));
+    if (cached) {
+      article = JSON.parse(cached);
+      cacheStatus = 'HIT';
+    } else {
+      article = await loadArticle(cacheKey, async () => {
+        const result = await pool.query(
+          `SELECT id, title, slug, body, author_id AS "authorId", created_at AS "createdAt", updated_at AS "updatedAt"
+           FROM articles WHERE id = $1`,
+          [id]
+        );
+        return result.rowCount === 0 ? null : result.rows[0];
+      });
+      if (cacheAvailable) cacheStatus = 'MISS';
+    }
+    if (!article) return reply.notFound('article not found');
 
-    const result = await pool.query(
-      `SELECT id, title, slug, body, author_id AS "authorId", created_at AS "createdAt", updated_at AS "updatedAt"
-       FROM articles WHERE id = $1`,
-      [id]
-    );
-    if (result.rowCount === 0) return reply.notFound('article not found');
-    await writeCache(cacheKey, JSON.stringify(result.rows[0]));
-    if (cacheAvailable) reply.header('X-Cache', 'MISS');
-    return result.rows[0];
+    const etag = articleEtag(article);
+    reply.header('Cache-Control', CACHE_CONTROL).header('ETag', etag);
+    if (cacheStatus) reply.header('X-Cache', cacheStatus);
+    if (request.headers['if-none-match'] === etag) return reply.code(304).send();
+    return article;
   });
 
   app.post('/articles', async (request, reply) => {

@@ -11,13 +11,15 @@ let cacheEnabled = false;
 try {
   await cache.connect();
   cacheEnabled = true;
-} catch (error) {
-  app.log?.warn?.({ error }, 'redis unavailable; using postgres only');
+} catch {
+  // cache stays disabled; the app logs this state once it exists
 }
 
 app = await buildApp({ cache: cacheEnabled ? cache : null });
 if (cacheEnabled) {
   app.log.info('redis cache enabled');
+} else {
+  app.log.warn('redis unavailable; using postgres only');
 }
 
 const shutdown = async (signal) => {

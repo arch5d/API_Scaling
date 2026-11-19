@@ -35,13 +35,21 @@ function createCache(initial = {}) {
   const store = new Map(Object.entries(initial));
   return {
     get: vi.fn(async (key) => (store.has(key) ? store.get(key) : null)),
-    set: vi.fn(async (key, value, _options) => {
+    set: vi.fn(async (key, value, options) => {
+      const { NX } = options ?? {};
+      if (NX && store.has(key)) return null;
       store.set(key, value);
       return 'OK';
     }),
     del: vi.fn(async (key) => {
       const had = store.delete(key);
       return had ? 1 : 0;
+    }),
+    eval: vi.fn(async (script, { keys, arguments: args }) => {
+      if (script.includes("redis.call('get'") && store.get(keys[0]) === args[0]) {
+        return store.delete(keys[0]) ? 1 : 0;
+      }
+      return 0;
     })
   };
 }
@@ -154,6 +162,47 @@ describe('GET /articles/:id', () => {
       const res = await app.inject({ method: 'GET', url });
       expect(res.statusCode).toBe(400);
     }
+  });
+
+  it('sets an ETag and stale-while-revalidate header and answers 304 on a conditional hit', async () => {
+    const cache = createCache({ 'article:1': JSON.stringify(ARTICLE) });
+    const app = await buildApp({ pool: createPool().pool, cache });
+    const etag = `"${ARTICLE.id}-${ARTICLE.updatedAt}"`;
+
+    const first = await app.inject({ method: 'GET', url: '/articles/1' });
+    expect(first.headers.etag).toBe(etag);
+    expect(first.headers['cache-control']).toBe('public, max-age=60, stale-while-revalidate=30');
+    expect(first.headers['x-cache']).toBe('HIT');
+
+    const conditional = await app.inject({
+      method: 'GET',
+      url: '/articles/1',
+      headers: { 'if-none-match': etag }
+    });
+    expect(conditional.statusCode).toBe(304);
+    expect(conditional.body).toBe('');
+    expect(conditional.headers.etag).toBe(etag);
+  });
+
+  it('coalesces concurrent cache misses into one database query', async () => {
+    const cache = createCache();
+    let queries = 0;
+    const { pool } = createPool(async () => {
+      queries += 1;
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      return { rows: [ARTICLE], rowCount: 1 };
+    });
+    const app = await buildApp({ pool, cache });
+
+    const [first, second] = await Promise.all([
+      app.inject({ method: 'GET', url: '/articles/1' }),
+      app.inject({ method: 'GET', url: '/articles/1' })
+    ]);
+
+    expect(queries).toBe(1);
+    expect(first.statusCode).toBe(200);
+    expect(second.statusCode).toBe(200);
+    expect(JSON.parse(second.body)).toEqual(ARTICLE);
   });
 
   it('falls back to the database when the cache fails', async () => {

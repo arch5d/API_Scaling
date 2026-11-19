@@ -1,6 +1,63 @@
 High-Throughput Blog Platform: Systems Engineering & Benchmarking Plan
 Framing: throughput as a moving target, not a fixed number
 
+> Older work stamps below are historical records of each phase. Where they conflict with the final
+> 2026-11-19 stamp above, the final stamp is authoritative.
+
+## Work Stamp - 2026-11-19 (final)
+
+### Achieved
+
+- Added PgBouncer in transaction-pooling mode between the API tier and PostgreSQL. The API connects to `pgbouncer:6432`; PgBouncer uses `max_client_conn=1000` and `default_pool_size=20`. With eight API replicas, `SHOW POOLS` reported 8 client connections and 5 server connections, while PostgreSQL reported 11 total connections against a 100-connection limit.
+- Added HTTP caching to `GET /articles/:id`: `ETag` derived from the article id and `updated_at`, `Cache-Control: public, max-age=60, stale-while-revalidate=30`, and `304 Not Modified` with an empty body when `If-None-Match` matches.
+- Added cache-fill stampede protection: an in-process Promise map coalesces concurrent misses in one replica, and a Redis `SET NX PX 5000` lock with a token-checked Lua release deduplicates fills across replicas. Waiters poll the cache for up to 2 seconds before falling back to PostgreSQL.
+- Extended the unit suite to 25 tests: ETag/304/Cache-Control behaviour and a concurrency test proving two simultaneous misses cause one database query. `npm test`, `npm run lint` and `npm run format:check` all pass.
+- Re-ran the acceptance workload on the final code with eight replicas: a 2-minute plateau via the Compose network passed (p95 5.56 ms, p99 9.48 ms, zero drops), and a **full 10-minute plateau through the published port from a Linux bridge network passed all thresholds** — 0 dropped iterations, 0.00% HTTP failures, p95 11.70 ms, p99 27.95 ms, 522,009 cache hits / 2,848 misses, 663,132 requests (921.10 requests/sec aggregate over ramp + plateau + cooldown), max 36/300 VUs. Raw output: `benchmarks/stress-published-linuxvm-10m.log`.
+- Confirmed that a true native-Linux-host run is not possible on this machine (only Docker Desktop's WSL utility distro is installed). The Compose-network run and the Linux bridge published-port run both stay inside Docker's Linux VM and exercise Linux networking without the Windows host forward.
+
+### Current Status
+
+All originally remaining goals are complete: 1,000 iterations/sec is sustained for 10 minutes on the final code, Postgres connections are pooled for larger replica counts, and HTTP caching/stampede protection are implemented and tested. Two later 10-minute attempts were discarded because the host session timed out mid-run and orphaned the k6 containers; their logs are marked incomplete in `benchmarks/PROGRESS.md`.
+
+### To Test
+
+1. Scale beyond eight replicas when more CPU is available; PgBouncer `default_pool_size` may need to increase for write-heavy traffic.
+2. Repeat the Windows-host published-port test on a native Linux host if that deployment is required.
+3. Commit the working-tree changes and benchmark evidence when approved.
+
+## Work Stamp - 2026-11-19
+
+### Achieved
+
+- Started the three-replica stack on Docker Engine 29.5.3 and confirmed all replicas healthy, Redis ready, and 229,346 articles in PostgreSQL.
+- Isolated the previous 1,000-RPS failures to the client/connect path: an identical k6 run through the Compose network (`BASE_URL=http://nginx`) passed with zero dropped iterations and 0.00% failures.
+- **Completed the full 10-minute 1,000-iterations/sec acceptance through NGINX on the Compose network:** 0 dropped iterations, 0.00% HTTP failures, p95 7.78 ms, p99 27.16 ms, 521,896 cache hits and 2,891 misses across 662,890 requests (920.78 requests/sec averaged over the ramp, plateau and cooldown). At most 196 of 300 preallocated VUs were needed. Raw output: `benchmarks/stress-internal-10m.log`.
+- Traced the remaining host-path drops to `host.docker.internal` and Docker's userland proxy. With `"userland-proxy": false` in the Docker daemon config and `BASE_URL=http://127.0.0.1:3000`, the 2-minute plateau passed with 0 drops, 0.00% failures, p95 10.93 ms and p99 34.81 ms. A full 10-minute host run still dropped 287 iterations with 0.00% HTTP failures, so the published-port path remains client-limited on this machine; the Compose-network acceptance is the valid final measurement.
+- Stopped one API replica during a 2-minute 1,000-RPS plateau. All thresholds passed: 0 dropped iterations, 0.00% HTTP failure rate (one in-flight request failed at the stop), p95 5.54 ms and p99 18.70 ms.
+
+### How It Was Achieved
+
+No application code changed for this phase. The stack already had the tuned NGINX worker/keepalive
+settings, the API HTTP keep-alive hook, the corrected create-then-delete write mix, and the
+realistic Pareto access pattern. The work was to control the load-generator environment: run k6
+with 8 CPU/8 GB, flush Redis before each run, target the Compose network for the clean acceptance
+measurement, and remove the Windows host connect-path overhead for the published-port retest.
+
+### Current Status
+
+The 1,000 iterations/sec plateau is now a **passing 10-minute measurement** for the three-replica,
+cache-enabled deployment behind NGINX, with large latency headroom against the p95 <250 ms,
+p99 <500 ms, <1% errors and zero-drop contract. The reported 920.78 requests/sec is the average
+over the whole 12-minute scenario including ramp-up and cooldown, not the plateau rate.
+
+### To Test
+
+1. ~~Full 10-minute plateau through the published port with `userland-proxy: false`.~~ Tested: 287 dropped iterations with 0.00% HTTP failures. Not the acceptance path on this host.
+2. ~~Stop one API replica during the sustained plateau and verify all thresholds still pass.~~ Done.
+3. Update the README run commands to use `127.0.0.1:3000`, then commit the tuning changes and benchmark evidence when approved.
+
+All raw k6 summaries and the reproduction commands are in `benchmarks/` (`PROGRESS.md`, `RUNBOOK.md`).
+
 ## Work Stamp - 2026-09-14
 
 ### Achieved
