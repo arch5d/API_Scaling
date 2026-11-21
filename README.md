@@ -6,7 +6,7 @@ The strongest recorded run completed a **10-minute plateau at 1,000 iterations/s
 
 ## Start the stack
 
-Requires Docker with Compose. Run from the repository root:
+Requires Docker with Compose. No `.env` file is needed for this setup: Compose supplies the local service configuration. Run from the repository root:
 
 ```sh
 docker compose up -d --build --scale api=3
@@ -59,7 +59,21 @@ docker compose up -d postgres redis
 npm ci
 ```
 
-Copy `.env.example` to `.env`, then start Node with explicit environment-file loading:
+Create a private local configuration from the checked-in template:
+
+```powershell
+# Windows PowerShell
+Copy-Item .env.example .env
+```
+
+```sh
+# macOS / Linux
+cp .env.example .env
+```
+
+`.env.example` contains public development defaults, not deployment credentials. `.env` and environment-specific variants such as `.env.local` are ignored by Git and excluded from Docker builds. Keep real credentials in your local environment or deployment secret configuration.
+
+Start Node with explicit environment-file loading:
 
 ```sh
 node --env-file=.env --watch src/server.js
