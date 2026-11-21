@@ -1,59 +1,50 @@
-# Benchmark progress log (2026-11-19)
+﻿# Benchmark results — 19 November 2026
 
-Live record of the scaling work. Raw k6 output lives in this folder next to this file.
+This is the historical experiment record. Raw logs are retained unchanged, including failed and incomplete runs. Workload arrival rate and HTTP throughput are different units.
 
-## Environment
+## Accepted long runs
 
-- Docker Engine 29.5.3, API replicas behind NGINX, Redis flushed before stress runs.
-- PostgreSQL holds 229,346 articles (100,000 seed rows plus earlier write-phase rows).
-- k6 workload: `loadtest/baseline.js`, `STRESS=true`, `ACCESS_PATTERN=realistic`, 8 CPU / 8 GB,
-  300 preallocated VUs, max 1,000 VUs, zero-drop threshold.
-- Final code adds PgBouncer transaction pooling, ETag / `stale-while-revalidate` headers, and
-  Redis-lock + in-process coalescing for cache fills.
+Both runs configured a ten-minute plateau at 1,000 iterations/second, with 90 seconds of ramp-up and 30 seconds of cooldown. Percentiles cover the entire run. Each iteration makes one request except the create-then-delete branch, which makes two when creation succeeds.
 
-## Results
+| Path                                                                                         | Configuration recorded at the time                 | HTTP requests | Aggregate requests/s |      p95 |      p99 | Failed requests | Dropped iterations |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------: | -------------------: | -------: | -------: | --------------: | -----------------: |
+| [Compose network](stress-internal-10m.log)                                                   | 3 replicas, before PgBouncer                       |       662,890 |               920.78 |  7.78 ms | 27.16 ms |               0 |                  0 |
+| [Published port from a Linux bridge inside Docker Desktop](stress-published-linuxvm-10m.log) | 8 replicas, with PgBouncer, ETags, fill coalescing |       663,132 |               921.10 | 11.70 ms | 27.95 ms |               0 |                  0 |
 
-| Test                                                                                               | Target        | Result                                                                                                                                        | Verdict          |
-| -------------------------------------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| Smoke via Compose network                                                                          | 30 iters/s    | 0 dropped, 0.00% failures, p95 8.74 ms, p99 13.55 ms                                                                                          | PASS             |
-| 2 min plateau via Compose network                                                                  | 1,000 iters/s | 0 dropped, 0.00% failures, p95 7.71 ms, p99 21.83 ms                                                                                          | PASS             |
-| Full 10 min plateau via Compose network (3 replicas, pre-PgBouncer)                                | 1,000 iters/s | 0 dropped, 0.00% failures, p95 7.78 ms, p99 27.16 ms, 662,890 requests, max 196/300 VUs                                                       | **PASS**         |
-| Windows published port via `host.docker.internal`                                                  | 1,000 iters/s | 729 dropped, 0.00% failures, p95 73.12 ms, VUs grew to 553                                                                                    | FAIL (zero-drop) |
-| Windows published port via `127.0.0.1`, with and without userland proxy                            | 1,000 iters/s | 2 min: PASS; 10 min: 282–287 dropped, 0.00% failures                                                                                          | FAIL at 10 min   |
-| Replica stopped during 2 min plateau                                                               | 1,000 iters/s | 0 dropped, 0.00% failure rate (1 in-flight request), p95 5.54 ms, p99 18.70 ms                                                                | PASS             |
-| **Published port from k6 on a Linux bridge network inside the Docker VM (8 replicas, final code)** | 1,000 iters/s | 0 dropped, 0.00% failures, p95 11.70 ms, p99 27.95 ms, 522,009 hits / 2,848 misses, 663,132 requests (921.10 req/s aggregate), max 36/300 VUs | **PASS — final** |
-| 2 min plateau, 8 replicas via Compose network                                                      | 1,000 iters/s | 0 dropped, 0.00% failures, p95 5.56 ms, p99 9.48 ms, max 8/300 VUs                                                                            | PASS             |
+The second run completed 656,399 iterations, with 522,009 cache hits and 2,848 misses reported through `X-Cache`. It used at most 36 active VUs out of 300 preallocated. Aggregate throughput includes ramps. At a 1,000-iteration plateau, the workload generates approximately 1,010 HTTP requests/second because about 1% of iterations perform two requests.
 
-### PgBouncer verification
+These runs changed both configuration and network path. They do not isolate replica scaling or PgBouncer's effect, and neither finds maximum sustainable throughput.
 
-- `SHOW POOLS` with 8 replicas: 8 client connections, 5 server connections, `pool_mode=transaction`.
-- Postgres reported 11 total connections, far below `max_connections=100`. Previously 8 replicas
-  would have required 80 direct connections.
-- API connects to `postgres://api:api@pgbouncer:6432/api_scaling`; PgBouncer has a healthcheck and
-  the API waits for it before starting.
+## Other retained evidence
 
-### HTTP caching / stampede verification
+| Log                                                                                                                                      | Interpretation                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [smoke-internal.log](smoke-internal.log)                                                                                                 | 30-iteration/s smoke test; thresholds passed                                               |
+| [stress-internal-2m.log](stress-internal-2m.log)                                                                                         | Short Compose-network acceptance run                                                       |
+| [stress-8replicas-2m.log](stress-8replicas-2m.log)                                                                                       | Eight-replica short run; p95 5.56 ms, p99 9.48 ms                                          |
+| [stress-published-linuxvm-2m.log](stress-published-linuxvm-2m.log)                                                                       | Short published-port run within Docker VM                                                  |
+| [replica-failure-under-load.log](replica-failure-under-load.log)                                                                         | One failed HTTP request out of 178,159; zero dropped iterations; p95 5.54 ms, p99 18.70 ms |
+| [stress-host-2m.log](stress-host-2m.log)                                                                                                 | Host-path experiment; not evidence for the accepted long run                               |
+| [stress-host-loopback-2m.log](stress-host-loopback-2m.log), [stress-host-noproxy-2m.log](stress-host-noproxy-2m.log)                     | Short host-loopback experiments                                                            |
+| [stress-host-loopback-10m.log](stress-host-loopback-10m.log), [stress-host-noproxy-10m.log](stress-host-noproxy-10m.log)                 | Long host-path runs failed the zero-drop requirement; 282–287 dropped iterations           |
+| [stress-final-3replicas-10m.log](stress-final-3replicas-10m.log), [stress-host-noproxy-500vu-10m.log](stress-host-noproxy-500vu-10m.log) | Incomplete after session timeouts; excluded from acceptance                                |
 
-- 25 unit tests pass, including: ETag header, `Cache-Control: public, max-age=60,
-stale-while-revalidate=30`, 304 with empty body on `If-None-Match`, and two concurrent misses
-  coalescing into one database query.
-- Live check through NGINX: first request `X-Cache: MISS`, second `HIT`, conditional request with
-  matching `If-None-Match` returned 304 with no body.
-- Fill deduplication uses a local in-flight Promise map plus a Redis `SET NX PX 5000` lock with
-  token-checked Lua release; waiters poll the cache for up to 2 s before falling back to Postgres.
+The failure experiment's printed `0.00%` is rounded: it had one failed request. It met the configured error budget during that stop, but did not demonstrate lossless failover. Some logs contain negative minimum request durations; timing anomalies are retained rather than silently corrected.
 
-### Notes on discarded runs
+## Environment and missing provenance
 
-- `stress-host-noproxy-500vu-10m.log` and `stress-final-3replicas-10m.log` are incomplete: the host
-  session timed out and the orphaned k6 containers were removed. They are not valid results and
-  must not be used for comparisons.
-- A one-off `pg` pool connection-timeout cluster appeared in API logs during an earlier Windows-host
-  run; later runs had 0% HTTP failures and no connection exhaustion.
+Experiment notes record Windows with Docker Desktop, Docker Engine 29.5.3, and 229,346 articles after earlier writes. The original seed contains 100,000 articles. Stress runs used the `realistic` access pattern, an initially empty Redis cache, 300 preallocated VUs, a 1,000-VU maximum, and k6 container limits of 8 CPUs and 8 GB.
 
-## To test next
+Those limits do not establish dedicated hardware or generator headroom. CPU model, host memory, Docker VM allocation, image digests, source revisions, and plateau-only time series are absent. Network-path differences are an observed association; summaries alone do not prove the cause of dropped iterations. No native Linux host was tested.
 
-1. Scaling beyond 8 replicas once more CPU is available; PgBouncer `default_pool_size` may need
-   tuning above 20 for write-heavy workloads.
-2. A real Linux host (none is installed here; only Docker Desktop's WSL utility distro) if the
-   Windows published-port path is required for production acceptance.
-3. Commit the working-tree changes and benchmark results when approved.
+Earlier notes report 8 PgBouncer client connections and 5 server connections during a pool inspection, but no machine-readable snapshot was retained. These are not established sustained-load measurements.
+
+## Unmeasured questions
+
+- Maximum sustainable rate, with repeated runs and uncertainty estimates.
+- Replica scaling with fixed hardware, network, dataset, and code.
+- Uniform versus skewed reads under identical conditions.
+- Redis outage/recovery and concurrent read/write consistency across replicas.
+- Performance of publication-cleanup changes in the current checkout.
+
+Use the [runbook](RUNBOOK.md) to capture new results separately. Do not overwrite historical logs.

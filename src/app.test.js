@@ -91,6 +91,17 @@ describe('GET /health', () => {
 });
 
 describe('GET /metrics', () => {
+  it('groups unknown URLs under one route label', async () => {
+    const app = await buildApp({ pool: createPool().pool });
+    await app.inject({ method: 'GET', url: '/missing-one' });
+    await app.inject({ method: 'GET', url: '/missing-two' });
+    const res = await app.inject({ method: 'GET', url: '/metrics' });
+    expect(res.body).toContain('route="unmatched",status_code="404"} 2');
+    expect(res.body).not.toContain('/missing-one');
+    expect(res.body).not.toContain('/missing-two');
+    await app.close();
+  });
+
   it('exposes Prometheus text metrics', async () => {
     const app = await buildApp({ pool: createPool().pool });
     const res = await app.inject({ method: 'GET', url: '/metrics' });
@@ -182,6 +193,27 @@ describe('GET /articles/:id', () => {
     expect(conditional.statusCode).toBe(304);
     expect(conditional.body).toBe('');
     expect(conditional.headers.etag).toBe(etag);
+  });
+
+  it('keeps the ETag stable when a database Date becomes cached JSON', async () => {
+    const cache = createCache();
+    const { pool, calls } = createPool(() => ({
+      rows: [{ ...ARTICLE, updatedAt: new Date(ARTICLE.updatedAt) }],
+      rowCount: 1
+    }));
+    const app = await buildApp({ pool, cache });
+    const first = await app.inject({ method: 'GET', url: '/articles/1' });
+    const second = await app.inject({
+      method: 'GET',
+      url: '/articles/1',
+      headers: { 'if-none-match': first.headers.etag }
+    });
+    expect(first.headers['x-cache']).toBe('MISS');
+    expect(second.headers['x-cache']).toBe('HIT');
+    expect(second.statusCode).toBe(304);
+    expect(second.headers.etag).toBe(first.headers.etag);
+    expect(calls).toHaveLength(1);
+    await app.close();
   });
 
   it('coalesces concurrent cache misses into one database query', async () => {

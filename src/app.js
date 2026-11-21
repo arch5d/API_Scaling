@@ -76,7 +76,7 @@ export async function buildApp({
     request.metricsStart = process.hrtime.bigint();
   });
   app.addHook('onResponse', async (request, reply) => {
-    const route = request.routeOptions?.url ?? request.url.split('?')[0];
+    const route = request.routeOptions?.url ?? 'unmatched';
     const labels = { method: request.method, route, status_code: String(reply.statusCode) };
     requestCount.inc(labels);
     const elapsedSeconds = Number(process.hrtime.bigint() - request.metricsStart) / 1e9;
@@ -174,7 +174,7 @@ export async function buildApp({
     }
   };
 
-  const articleEtag = (article) => `"${article.id}-${article.updatedAt}"`;
+  const articleEtag = (article) => `"${article.id}-${new Date(article.updatedAt).toISOString()}"`;
 
   app.get('/', async (_request, reply) => {
     return reply.send({

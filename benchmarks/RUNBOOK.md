@@ -1,135 +1,102 @@
-# 1,000 RPS acceptance runbook
+﻿# Running the load tests
 
-Exact commands used for the final benchmark phase (Windows + Docker Desktop, 2026-11-19).
+Run these PowerShell commands from the repository root with Docker Compose. Tests create and update articles; deletes create their own target. Use a disposable benchmark database.
 
-## 1. Host tuning (Docker Desktop only)
-
-On this machine `host.docker.internal:3000` added enough connect overhead to drop iterations at
-1,000 RPS. Use `127.0.0.1:3000`, and disable the Docker userland proxy:
-
-```powershell
-# %USERPROFILE%\.docker\daemon.json — merge this key, do not replace the file
-{ "userland-proxy": false }
-
-docker desktop restart
-```
-
-Backup of the original config is kept as `daemon.json.bak`. Revert by restoring the backup and
-restarting Docker Desktop if the host path is not needed.
-
-## 2. Start the stack
+## Prepare
 
 ```powershell
 docker compose up -d --build --scale api=3
-Invoke-RestMethod http://127.0.0.1:3000/health
+docker compose restart nginx
+Invoke-RestMethod http://localhost:3000/health
+docker compose exec -T postgres psql -U api -d api_scaling -c "SELECT count(*) FROM articles;"
 ```
 
-Verify three healthy replicas and a ready cache. Flush Redis before every stress run so the
-realistic Pareto access pattern warms the cache naturally:
+NGINX needs a reload or restart after replica addresses change. Wait for `/health` to succeed. A new PostgreSQL volume seeds IDs 1–100,000; existing volumes retain prior writes and do not rerun initialization.
+
+Find the Compose network without assuming a checkout directory name:
 
 ```powershell
-docker exec api_scaling-redis-1 redis-cli FLUSHDB
+$apiId = docker compose ps -q api | Select-Object -First 1
+$network = docker inspect --format '{{range $name, $config := .NetworkSettings.Networks}}{{$name}}{{end}}' $apiId
+$scripts = (Resolve-Path ./loadtest).Path
 ```
 
-## 3. Full acceptance run (10-minute plateau, published port)
+This assumes the API's single default Compose network. Confirm the network if you customize Compose.
+
+## Smoke test
 
 ```powershell
-docker run --rm -i --cpus=8 --memory=8g --network host `
-  -v "${PWD}\loadtest:/scripts" `
-  -e BASE_URL=http://127.0.0.1:3000 `
-  -e STRESS=true `
-  -e ACCESS_PATTERN=realistic `
-  grafana/k6 run /scripts/baseline.js 2>&1 | Tee-Object -FilePath "benchmarks/stress-host-noproxy-10m.log"
+docker run --rm --network $network `
+  -v "${scripts}:/scripts:ro" `
+  -e BASE_URL=http://nginx -e SMOKE=true `
+  grafana/k6 run /scripts/baseline.js
 ```
 
-Equivalent internal-network variant (avoids the published port entirely):
+Smoke mode ramps to 30 iterations/second and lasts 35 seconds. Without `SMOKE` or `STRESS`, the scenario lasts 13 minutes with a 100-iteration/s plateau.
+
+## Stress test
+
+Clear only this project's disposable cache before a cold-cache run:
 
 ```powershell
-docker run --rm -i --cpus=8 --memory=8g --network api_scaling_default `
-  -v "${PWD}\loadtest:/scripts" `
-  -e BASE_URL=http://nginx `
-  -e STRESS=true `
-  -e ACCESS_PATTERN=realistic `
-  grafana/k6 run /scripts/baseline.js 2>&1 | Tee-Object -FilePath "benchmarks/stress-internal-10m.log"
-```
-
-Quick iteration: add `-e STRESS_PLATEAU=2m` (total run ~4 minutes instead of 12).
-
-## 4. Acceptance contract
-
-The k6 script fails the run if any threshold is crossed:
-
-- `dropped_iterations count==0`
-- `http_req_failed rate<0.01`
-- `http_req_duration p(95)<250` and `p(99)<500`
-
-The `ramping-arrival-rate` stages are 30 s ramp to 250, 1 min ramp to 1,000, 10 min at 1,000,
-30 s ramp to 0. Aggregate `http_reqs/s` therefore includes ramp and cooldown and is **not** the
-plateau rate; the plateau rate is the configured 1,000 iterations/sec.
-
-## 5. Interpreting results
-
-- `article_cache_hits` / `article_cache_misses` come from the `X-Cache` response header.
-- `vus_max` well below 1,000 means the generator had headroom; a climbing VU count together with
-  `dropped_iterations` indicates a client/connect-path limit, not an API limit.
-- Raw k6 summaries for every run live next to this file.
-
-## 6. Final code: PgBouncer + HTTP caching
-
-PgBouncer is a Compose service. Check pooling after scaling replicas:
-
-```powershell
-docker compose up -d --scale api=8
-docker exec -e PGPASSWORD=api api_scaling-pgbouncer-1 `
-  psql -h 127.0.0.1 -p 6432 -U api -d pgbouncer -c "SHOW POOLS;"
-docker exec api_scaling-postgres-1 psql -U api -d api_scaling -c "SELECT count(*) FROM pg_stat_activity;"
-```
-
-With 8 replicas this shows 8 client connections, 5 server connections and `pool_mode=transaction`.
-
-Conditional requests:
-
-```powershell
-$r = Invoke-WebRequest -UseBasicParsing http://127.0.0.1:3000/articles/1
-$r.Headers['ETag']                       # "1-2026-09-10T14:34:06.683Z"
-$r.Headers['Cache-Control']              # public, max-age=60, stale-while-revalidate=30
-node -e "fetch('http://127.0.0.1:3000/articles/1',{headers:{'If-None-Match':'$($r.Headers['ETag'])'}}).then(async r=>console.log(r.status,(await r.text()).length))"
-```
-
-## 7. Published-port acceptance from the Docker Linux VM
-
-This path exercises Linux iptables port publishing without the Windows host forward. It is the
-final accepted 10-minute run (8 replicas):
-
-```powershell
-docker network create bench-external
-docker exec api_scaling-redis-1 redis-cli FLUSHDB
-docker run --rm -i --cpus=8 --memory=8g --network bench-external `
-  -v "${PWD}\loadtest:/scripts" `
-  -e BASE_URL=http://host.docker.internal:3000 `
-  -e STRESS=true `
-  -e ACCESS_PATTERN=realistic `
+docker compose exec -T redis redis-cli FLUSHDB
+docker run --rm --cpus=8 --memory=8g --network $network `
+  -v "${scripts}:/scripts:ro" `
+  -e BASE_URL=http://nginx -e STRESS=true -e ACCESS_PATTERN=realistic `
   grafana/k6 run /scripts/baseline.js 2>&1 |
-  Tee-Object -FilePath "benchmarks/stress-published-linuxvm-10m.log"
+  Tee-Object -FilePath benchmarks/local-stress.log
+if ($LASTEXITCODE -ne 0) { throw 'k6 failed; inspect the log.' }
 ```
 
-A true native-Linux-host run was not possible: this machine only has Docker Desktop's WSL utility
-distro. The Compose-network run remains the closest Linux-native equivalent.
+Use a new log filename each time. The 8-CPU / 8-GB limits match the historical command, but available host resources still constrain k6. For a short run, add `-e STRESS_PLATEAU=2m`. Record any overrides to `PRE_VUS` or `MAX_VUS`.
 
-## 8. Replica-failure under sustained load
+Stress mode ramps from 10 to 250 iterations/s over 30 seconds, to 1,000 over one minute, holds for ten minutes, then ramps to zero over 30 seconds. Acceptance requires:
 
-Start a 2-minute-plateau run as above in one terminal. At roughly 100 seconds (30 s + 60 s ramp
-plus ~10 s into the plateau), stop one replica from another terminal:
+- Zero dropped iterations.
+- HTTP failure rate below 1%.
+- Whole-run p95 below 250 ms and p99 below 500 ms.
+
+An iteration selects an operation: 80% single reads, 15% lists, 3% creates, 1% updates, and 1% create-then-delete operations in expectation. `realistic` is the script's name for a synthetic Pareto-like ID sampler with exponent 0.8, clamped at 100,000. It strongly favors the first few articles; it is not real user traffic. Without this option, reads sample IDs uniformly.
+
+## Published-port comparison
+
+The accepted historical eight-replica run originated from a separate Linux bridge inside Docker Desktop and targeted `host.docker.internal:3000`. It did not originate from Windows or a native Linux host. Current Compose ports bind to loopback for local development; that historical bridge-to-published-port route may not be reachable with this binding.
+
+For a host-path measurement, use locally installed k6:
 
 ```powershell
-docker stop api_scaling-api-2
+k6 run -e BASE_URL=http://127.0.0.1:3000 -e STRESS=true -e ACCESS_PATTERN=realistic loadtest/baseline.js
 ```
 
-The run should still meet all thresholds; NGINX retries the failed upstream and `/health` reports
-the remaining replicas. Restore the replica afterwards:
+Label the network path explicitly. Do not compare results as if only the API changed. Historical Docker daemon proxy changes were experimental and are not required setup steps.
+
+## Replica-stop experiment
+
+Start a two-minute stress plateau in one terminal. In another, stop a running replica about 100 seconds after k6 starts:
+
+```powershell
+$victim = docker compose ps -q api | Select-Object -First 1
+docker stop $victim
+```
+
+After the test, restore the original replica count and refresh NGINX:
 
 ```powershell
 docker compose up -d --scale api=3 api
+docker compose restart nginx
 ```
 
-Record the k6 summary in `benchmarks/replica-failure-under-load.log`.
+Record stop timing and absolute failure counts. The historical test passed thresholds while losing one request. The old automated helper was removed because it assumed container names, overwrote evidence, and did not reliably propagate k6 failures.
+
+## Capture comparison context
+
+Save the commit (`git rev-parse HEAD`), working-tree status, Node/k6/Docker versions, resolved Compose configuration, image digests, replica count, CPU/RAM, Docker VM limits, row count, cache preparation, and full command. Save fresh logs and optionally k6's `--summary-export` JSON. Remove credentials from published configuration captures.
+
+Inspect connections during load:
+
+```powershell
+docker compose exec -T -e PGPASSWORD=api pgbouncer psql -h 127.0.0.1 -p 6432 -U api -d pgbouncer -c "SHOW POOLS;"
+docker compose exec -T postgres psql -U api -d api_scaling -c "SELECT count(*) FROM pg_stat_activity;"
+```
+
+Zero drops means k6 scheduled the workload. Drops can result from generator limits, network delay, or slow responses; a summary alone cannot identify the responsible component.
