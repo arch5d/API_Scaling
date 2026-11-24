@@ -56,8 +56,8 @@ Two 10-minute-plateau runs of `3-pool-redis` were attempted after the matrix, ea
 
 | Attempt | Wall clock for a 12-minute schedule | Max `http_req_duration` | Whole-run HTTP RPS | Resource-sampling gap |
 | ------- | ----------------------------------: | ----------------------: | -----------------: | --------------------: |
-| First   | 98 minutes                         | 1h26m5s                 | 112.67             | 5,198.75 s            |
-| Repeat  | 16m15s                             | 4m11s                   | 681.10             | 273.58 s              |
+| First   |                          98 minutes |                 1h26m5s |             112.67 |            5,198.75 s |
+| Repeat  |                              16m15s |                   4m11s |             681.10 |              273.58 s |
 
 Both k6 runs exited 0 with zero failed requests, zero drops and passing printed thresholds (first: p95 23.96 ms, p99 89.2 ms; repeat: p95 4.37 ms, p99 9.46 ms). The stalls distort whole-run throughput and add extreme latency outliers, so none of these values is presented as a clean sustained-load measurement. The 32 and 39 resource samples — roughly 390 were expected at the intended 15-second cadence — and the matching gaps corroborate the stalls.
 
