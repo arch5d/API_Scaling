@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img">
+<title>architecture</title>
+<rect x="0" y="0" width="1600" height="900" fill="#101827"/>
+<text x="70" y="103" font-family="Arial, sans-serif" font-size="48" fill="#f5f8ff">API scaling: the request path</text>
+<text x="70" y="150" font-family="Arial, sans-serif" font-size="25" fill="#aebed5">Local Docker Desktop stack | configurable Fastify replicas</text>
+<rect x="70" y="245" width="280" height="140" fill="#21324b"/>
+<text x="94" y="302" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">Client / k6</text>
+<text x="94" y="346" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">Mixed CRUD workload</text>
+<rect x="430" y="245" width="280" height="140" fill="#21324b"/>
+<text x="454" y="302" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">NGINX</text>
+<text x="454" y="346" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">localhost:3000</text>
+<rect x="790" y="245" width="350" height="140" fill="#21324b"/>
+<text x="814" y="302" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">Fastify replicas</text>
+<text x="814" y="346" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">DB pool: 10 / replica</text>
+<line x1="350" y1="315" x2="430" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<line x1="416" y1="306" x2="430" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<line x1="416" y1="324" x2="430" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<line x1="710" y1="315" x2="790" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<line x1="776" y1="306" x2="790" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<line x1="776" y1="324" x2="790" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<rect x="1220" y="245" width="310" height="140" fill="#21324b"/>
+<text x="1244" y="302" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">Redis</text>
+<text x="1244" y="346" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">Article cache: 10 min</text>
+<line x1="1140" y1="315" x2="1220" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<line x1="1206" y1="306" x2="1220" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<line x1="1206" y1="324" x2="1220" y2="315" stroke="#65ddc0" stroke-width="4"/>
+<rect x="790" y="515" width="350" height="140" fill="#21324b"/>
+<text x="814" y="572" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">PgBouncer</text>
+<text x="814" y="616" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">Transaction pooling</text>
+<line x1="965" y1="385" x2="965" y2="515" stroke="#65ddc0" stroke-width="4"/>
+<line x1="956" y1="501" x2="965" y2="515" stroke="#65ddc0" stroke-width="4"/>
+<line x1="974" y1="501" x2="965" y2="515" stroke="#65ddc0" stroke-width="4"/>
+<rect x="1220" y="515" width="310" height="140" fill="#21324b"/>
+<text x="1244" y="572" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">PostgreSQL</text>
+<text x="1244" y="616" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">Source of truth</text>
+<line x1="1140" y1="585" x2="1220" y2="585" stroke="#65ddc0" stroke-width="4"/>
+<line x1="1206" y1="576" x2="1220" y2="585" stroke="#65ddc0" stroke-width="4"/>
+<line x1="1206" y1="594" x2="1220" y2="585" stroke="#65ddc0" stroke-width="4"/>
+<text x="70" y="512" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">Single reads: Redis first;</text>
+<text x="70" y="557" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">misses reach PostgreSQL.</text>
+<text x="70" y="622" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">Lists and writes: database.</text>
+<text x="70" y="667" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">Writes invalidate cached articles.</text>
+<text x="70" y="802" font-family="Arial, sans-serif" font-size="27" fill="#65ddc0">k6 shares host resources with the system under test.</text>
+<text x="70" y="849" font-family="Arial, sans-serif" font-size="24" fill="#aebed5">Single NGINX, Redis and PostgreSQL instances; no high-availability claim.</text>
+</svg>

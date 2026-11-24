@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img">
+<title>benchmark summary</title>
+<rect x="0" y="0" width="1600" height="900" fill="#101827"/>
+<text x="70" y="103" font-family="Arial, sans-serif" font-size="48" fill="#f5f8ff">API scaling | recorded k6 summary</text>
+<text x="70" y="150" font-family="Arial, sans-serif" font-size="25" fill="#aebed5">19 Nov 2026 | 8 replicas + Redis + PgBouncer | formatted from the saved log</text>
+<rect x="70" y="225" width="700" height="155" fill="#21324b"/>
+<text x="94" y="282" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">921.10 HTTP requests/s</text>
+<text x="94" y="326" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">Whole-run average, including ramps</text>
+<rect x="810" y="225" width="720" height="155" fill="#21324b"/>
+<text x="834" y="282" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">1,000 iterations/s</text>
+<text x="834" y="326" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">Configured 10-minute plateau; 12-minute total run</text>
+<rect x="70" y="420" width="700" height="155" fill="#21324b"/>
+<text x="94" y="477" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">11.70 ms p95 / 27.95 ms p99</text>
+<text x="94" y="521" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">Whole-run HTTP latency</text>
+<rect x="810" y="420" width="720" height="155" fill="#21324b"/>
+<text x="834" y="477" font-family="Arial, sans-serif" font-size="32" fill="#f5f8ff">0 failed / 663,132 requests</text>
+<text x="834" y="521" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">0 dropped iterations; 656,399 completed</text>
+<text x="70" y="667" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">An iteration chooses a read, list or write; create-then-delete uses two requests.</text>
+<text x="70" y="727" font-family="Arial, sans-serif" font-size="27" fill="#aebed5">Path: Linux bridge inside Docker Desktop to the published port.</text>
+<text x="70" y="777" font-family="Arial, sans-serif" font-size="27" fill="#aebed5">Shared host; Docker VM CPU/RAM unrecorded. Not a capacity ceiling.</text>
+<text x="70" y="854" font-family="Arial, sans-serif" font-size="24" fill="#65ddc0">Source: benchmarks/stress-published-linuxvm-10m.log</text>
+</svg>

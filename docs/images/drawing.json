@@ -1,0 +1,264 @@
+{
+  "architecture": [
+    { "kind": "rect", "x": 0, "y": 0, "w": 1600, "h": 900, "color": "#101827" },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 55,
+      "value": "API scaling: the request path",
+      "size": 48,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 125,
+      "value": "Local Docker Desktop stack | configurable Fastify replicas",
+      "size": 25,
+      "color": "#aebed5"
+    },
+    { "kind": "rect", "x": 70, "y": 245, "w": 280, "h": 140, "color": "#21324b" },
+    { "kind": "text", "x": 94, "y": 270, "value": "Client / k6", "size": 32, "color": "#f5f8ff" },
+    { "kind": "text", "x": 94, "y": 323, "value": "Mixed CRUD workload", "size": 23, "color": "#aebed5" },
+    { "kind": "rect", "x": 430, "y": 245, "w": 280, "h": 140, "color": "#21324b" },
+    { "kind": "text", "x": 454, "y": 270, "value": "NGINX", "size": 32, "color": "#f5f8ff" },
+    { "kind": "text", "x": 454, "y": 323, "value": "localhost:3000", "size": 23, "color": "#aebed5" },
+    { "kind": "rect", "x": 790, "y": 245, "w": 350, "h": 140, "color": "#21324b" },
+    { "kind": "text", "x": 814, "y": 270, "value": "Fastify replicas", "size": 32, "color": "#f5f8ff" },
+    { "kind": "text", "x": 814, "y": 323, "value": "DB pool: 10 / replica", "size": 23, "color": "#aebed5" },
+    { "kind": "line", "x": 350, "y": 315, "xx": 430, "yy": 315, "color": "#65ddc0" },
+    { "kind": "line", "x": 416, "y": 306, "xx": 430, "yy": 315, "color": "#65ddc0" },
+    { "kind": "line", "x": 416, "y": 324, "xx": 430, "yy": 315, "color": "#65ddc0" },
+    { "kind": "line", "x": 710, "y": 315, "xx": 790, "yy": 315, "color": "#65ddc0" },
+    { "kind": "line", "x": 776, "y": 306, "xx": 790, "yy": 315, "color": "#65ddc0" },
+    { "kind": "line", "x": 776, "y": 324, "xx": 790, "yy": 315, "color": "#65ddc0" },
+    { "kind": "rect", "x": 1220, "y": 245, "w": 310, "h": 140, "color": "#21324b" },
+    { "kind": "text", "x": 1244, "y": 270, "value": "Redis", "size": 32, "color": "#f5f8ff" },
+    { "kind": "text", "x": 1244, "y": 323, "value": "Article cache: 10 min", "size": 23, "color": "#aebed5" },
+    { "kind": "line", "x": 1140, "y": 315, "xx": 1220, "yy": 315, "color": "#65ddc0" },
+    { "kind": "line", "x": 1206, "y": 306, "xx": 1220, "yy": 315, "color": "#65ddc0" },
+    { "kind": "line", "x": 1206, "y": 324, "xx": 1220, "yy": 315, "color": "#65ddc0" },
+    { "kind": "rect", "x": 790, "y": 515, "w": 350, "h": 140, "color": "#21324b" },
+    { "kind": "text", "x": 814, "y": 540, "value": "PgBouncer", "size": 32, "color": "#f5f8ff" },
+    { "kind": "text", "x": 814, "y": 593, "value": "Transaction pooling", "size": 23, "color": "#aebed5" },
+    { "kind": "line", "x": 965, "y": 385, "xx": 965, "yy": 515, "color": "#65ddc0" },
+    { "kind": "line", "x": 956, "y": 501, "xx": 965, "yy": 515, "color": "#65ddc0" },
+    { "kind": "line", "x": 974, "y": 501, "xx": 965, "yy": 515, "color": "#65ddc0" },
+    { "kind": "rect", "x": 1220, "y": 515, "w": 310, "h": 140, "color": "#21324b" },
+    { "kind": "text", "x": 1244, "y": 540, "value": "PostgreSQL", "size": 32, "color": "#f5f8ff" },
+    { "kind": "text", "x": 1244, "y": 593, "value": "Source of truth", "size": 23, "color": "#aebed5" },
+    { "kind": "line", "x": 1140, "y": 585, "xx": 1220, "yy": 585, "color": "#65ddc0" },
+    { "kind": "line", "x": 1206, "y": 576, "xx": 1220, "yy": 585, "color": "#65ddc0" },
+    { "kind": "line", "x": 1206, "y": 594, "xx": 1220, "yy": 585, "color": "#65ddc0" },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 485,
+      "value": "Single reads: Redis first;",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 530,
+      "value": "misses reach PostgreSQL.",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 595,
+      "value": "Lists and writes: database.",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 640,
+      "value": "Writes invalidate cached articles.",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 775,
+      "value": "k6 shares host resources with the system under test.",
+      "size": 27,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 825,
+      "value": "Single NGINX, Redis and PostgreSQL instances; no high-availability claim.",
+      "size": 24,
+      "color": "#aebed5"
+    }
+  ],
+  "cache-hit-rate": [
+    { "kind": "rect", "x": 0, "y": 0, "w": 1600, "h": 900, "color": "#101827" },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 55,
+      "value": "What the recorded cache counters show",
+      "size": 48,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 125,
+      "value": "8 replicas | published port from a Linux bridge inside Docker Desktop",
+      "size": 25,
+      "color": "#aebed5"
+    },
+    { "kind": "text", "x": 70, "y": 230, "value": "99.46% cache hits", "size": 80, "color": "#65ddc0" },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 350,
+      "value": "522,009 HIT / 2,848 MISS responses",
+      "size": 36,
+      "color": "#f5f8ff"
+    },
+    { "kind": "rect", "x": 70, "y": 440, "w": 1460, "h": 90, "color": "#f5ae70" },
+    { "kind": "rect", "x": 70, "y": 440, "w": 1452.0776897326318, "h": 90, "color": "#65ddc0" },
+    { "kind": "text", "x": 70, "y": 565, "value": "HIT 99.46%", "size": 30, "color": "#65ddc0" },
+    { "kind": "text", "x": 1130, "y": 565, "value": "MISS 0.54%", "size": 30, "color": "#f5ae70" },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 665,
+      "value": "Denominator: responses counted with X-Cache HIT or MISS.",
+      "size": 28,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 715,
+      "value": "Not all HTTP requests. Synthetic skewed reads; whole run including ramps.",
+      "size": 26,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 765,
+      "value": "This measures cache usage, not the speedup caused by Redis.",
+      "size": 26,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 830,
+      "value": "Source: benchmarks/stress-published-linuxvm-10m.log | 19 Nov 2026",
+      "size": 23,
+      "color": "#aebed5"
+    }
+  ],
+  "benchmark-summary": [
+    { "kind": "rect", "x": 0, "y": 0, "w": 1600, "h": 900, "color": "#101827" },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 55,
+      "value": "API scaling | recorded k6 summary",
+      "size": 48,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 125,
+      "value": "19 Nov 2026 | 8 replicas + Redis + PgBouncer | formatted from the saved log",
+      "size": 25,
+      "color": "#aebed5"
+    },
+    { "kind": "rect", "x": 70, "y": 225, "w": 700, "h": 155, "color": "#21324b" },
+    { "kind": "text", "x": 94, "y": 250, "value": "921.10 HTTP requests/s", "size": 32, "color": "#f5f8ff" },
+    {
+      "kind": "text",
+      "x": 94,
+      "y": 303,
+      "value": "Whole-run average, including ramps",
+      "size": 23,
+      "color": "#aebed5"
+    },
+    { "kind": "rect", "x": 810, "y": 225, "w": 720, "h": 155, "color": "#21324b" },
+    { "kind": "text", "x": 834, "y": 250, "value": "1,000 iterations/s", "size": 32, "color": "#f5f8ff" },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 303,
+      "value": "Configured 10-minute plateau; 12-minute total run",
+      "size": 23,
+      "color": "#aebed5"
+    },
+    { "kind": "rect", "x": 70, "y": 420, "w": 700, "h": 155, "color": "#21324b" },
+    {
+      "kind": "text",
+      "x": 94,
+      "y": 445,
+      "value": "11.70 ms p95 / 27.95 ms p99",
+      "size": 32,
+      "color": "#f5f8ff"
+    },
+    { "kind": "text", "x": 94, "y": 498, "value": "Whole-run HTTP latency", "size": 23, "color": "#aebed5" },
+    { "kind": "rect", "x": 810, "y": 420, "w": 720, "h": 155, "color": "#21324b" },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 445,
+      "value": "0 failed / 663,132 requests",
+      "size": 32,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 498,
+      "value": "0 dropped iterations; 656,399 completed",
+      "size": 23,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 640,
+      "value": "An iteration chooses a read, list or write; create-then-delete uses two requests.",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 700,
+      "value": "Path: Linux bridge inside Docker Desktop to the published port.",
+      "size": 27,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 750,
+      "value": "Shared host; Docker VM CPU/RAM unrecorded. Not a capacity ceiling.",
+      "size": 27,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 830,
+      "value": "Source: benchmarks/stress-published-linuxvm-10m.log",
+      "size": 24,
+      "color": "#65ddc0"
+    }
+  ]
+}

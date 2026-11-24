@@ -39,6 +39,32 @@ Those limits do not establish dedicated hardware or generator headroom. CPU mode
 
 Earlier notes report 8 PgBouncer client connections and 5 server connections during a pool inspection, but no machine-readable snapshot was retained. These are not established sustained-load measurements.
 
+## Recovered session evidence
+
+On 21 November 2026, the repository owner supplied an OpenCode recovery report from the persisted session titled “Current project details” (1–19 November 2026). This section summarizes that supplied report; the underlying session history was not independently inspected here. References to current repository prose in the report are not new historical measurements.
+
+On 24 November, the owner supplied a follow-up OpenCode report stating that the persisted history had now been inspected directly, including the November session and a September session. That inspection confirmed the missing historical hardware capture, the lost original single-instance summaries, and the absence of controlled Redis/PgBouncer comparisons. This repository records the supplied verification; it does not claim that the documentation editor independently accessed those sessions. The follow-up cites November sequence 4 and September sequence 56 as acknowledging the missing single-instance output. No new raw benchmark result was recovered.
+
+The report found no benchmark-time Docker VM CPU/RAM allocation, host CPU model, physical/logical core counts, or installed RAM. The separate 21 November Docker check (12 logical CPUs, 12,389,126,144 bytes of memory) describes the current environment only.
+
+Historical command excerpts cited by the report establish the generator topology:
+
+- Session sequence 218: `docker run --rm -i --cpus=8 --memory=8g --network api_scaling_default … -e BASE_URL=http://nginx -e STRESS=true -e ACCESS_PATTERN=realistic …` for the accepted three-replica run, before PgBouncer.
+- Session sequence 1036: `docker run --rm -i --cpus=8 --memory=8g --network bench-external … -e BASE_URL=http://host.docker.internal:3000 …` for the accepted eight-replica run.
+
+These excerpts are incomplete provenance snippets, not executable commands. Both generators shared the Docker Desktop VM and physical machine with the stack. The report also states that Redis was flushed before both accepted runs. Neither a different bridge nor the k6 container's resource limits establish dedicated hardware.
+
+Earlier single-instance experiments appear only in session recaps, with original output missing:
+
+| Recalled experiment                        | Reported result                                                                                                   | Evidence limitation                                                                                                                |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| PostgreSQL-only baseline                   | “sustained 100 RPS”, latency/error thresholds passed                                                              | No retained raw log, percentiles, absolute counts, drops, or verified request/iteration distinction                                |
+| Single-instance hot reads with Redis       | 521.7 iterations/s; 526.8 HTTP requests/s; p95 5.13 ms; p99 8.88 ms; reported 0% failures; 75,204 hits / 2 misses | Session recap only; duration, absolute failures/total requests, drops and full configuration not retained in the supplied evidence |
+| Single-instance realistic reads with Redis | Reported exit code 0 with initially empty Redis                                                                   | Exact summary lost; the recap's “1,000 RPS” label does not establish measured HTTP throughput                                      |
+| Earlier provisional 100-iteration/s run    | p95 10.19 ms; p99 36.16 ms; reported 0.19% failures                                                               | Original output and complete comparison context missing                                                                            |
+
+These recollections are not verified November 19 results and are excluded from the README's numerical comparison and visuals. They do not establish a Redis speedup. The recovery found no controlled comparison changing only Redis or only PgBouncer; replica count, network path and implementation changes remain confounded in the accepted runs.
+
 ## Unmeasured questions
 
 - Maximum sustainable rate, with repeated runs and uncertainty estimates.

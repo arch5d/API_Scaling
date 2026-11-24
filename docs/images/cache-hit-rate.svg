@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img">
+<title>cache hit rate</title>
+<rect x="0" y="0" width="1600" height="900" fill="#101827"/>
+<text x="70" y="103" font-family="Arial, sans-serif" font-size="48" fill="#f5f8ff">What the recorded cache counters show</text>
+<text x="70" y="150" font-family="Arial, sans-serif" font-size="25" fill="#aebed5">8 replicas | published port from a Linux bridge inside Docker Desktop</text>
+<text x="70" y="310" font-family="Arial, sans-serif" font-size="80" fill="#65ddc0">99.46% cache hits</text>
+<text x="70" y="386" font-family="Arial, sans-serif" font-size="36" fill="#f5f8ff">522,009 HIT / 2,848 MISS responses</text>
+<rect x="70" y="440" width="1460" height="90" fill="#f5ae70"/>
+<rect x="70" y="440" width="1452.0776897326318" height="90" fill="#65ddc0"/>
+<text x="70" y="595" font-family="Arial, sans-serif" font-size="30" fill="#65ddc0">HIT 99.46%</text>
+<text x="1130" y="595" font-family="Arial, sans-serif" font-size="30" fill="#f5ae70">MISS 0.54%</text>
+<text x="70" y="693" font-family="Arial, sans-serif" font-size="28" fill="#f5f8ff">Denominator: responses counted with X-Cache HIT or MISS.</text>
+<text x="70" y="741" font-family="Arial, sans-serif" font-size="26" fill="#aebed5">Not all HTTP requests. Synthetic skewed reads; whole run including ramps.</text>
+<text x="70" y="791" font-family="Arial, sans-serif" font-size="26" fill="#aebed5">This measures cache usage, not the speedup caused by Redis.</text>
+<text x="70" y="853" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">Source: benchmarks/stress-published-linuxvm-10m.log | 19 Nov 2026</text>
+</svg>
