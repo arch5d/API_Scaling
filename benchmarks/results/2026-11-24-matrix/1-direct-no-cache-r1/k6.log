@@ -1,0 +1,45 @@
+time="2026-11-24T06:37:11Z" level=warning msg="Insufficient VUs, reached 1000 active VUs and cannot initialize more" executor=ramping-arrival-rate scenario=baseline
+
+
+  █ THRESHOLDS 
+
+    dropped_iterations
+    ✗ 'count==0' count=2091
+
+    http_req_duration
+    ✓ 'p(95)<250' p(95)=70.41ms
+    ✗ 'p(99)<500' p(99)=719.65ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.63%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 174308 726.362007/s
+    checks_succeeded...: 99.35% 173191 out of 174308
+    checks_failed......: 0.64%  1117 out of 174308
+
+    ✗ status is successful
+      ↳  99% — ✓ 173191 / ✗ 1117
+
+    HTTP
+    http_req_duration..............: avg=31.87ms min=-1574943ns med=3.01ms max=2.63s p(90)=29.45ms p(95)=70.41ms p(99)=719.65ms
+      { expected_response:true }...: avg=21.87ms min=-1574943ns med=2.99ms max=2.63s p(90)=27.39ms p(95)=58.37ms p(99)=347.4ms 
+    http_req_failed................: 0.63%  1117 out of 176023
+    http_reqs......................: 176023 733.508614/s
+
+    EXECUTION
+    dropped_iterations.............: 2091   8.713444/s
+    iteration_duration.............: avg=32.5ms  min=986.96µs   med=3.29ms max=3.16s p(90)=30.06ms p(95)=72.27ms p(99)=743.33ms
+    iterations.....................: 174308 726.362007/s
+    vus............................: 0      min=0              max=1000
+    vus_max........................: 1000   min=300            max=1000
+
+    NETWORK
+    data_received..................: 169 MB 705 kB/s
+    data_sent......................: 14 MB  60 kB/s
+
+
+
+time="2026-11-24T06:39:03Z" level=error msg="thresholds on metrics 'dropped_iterations, http_req_duration' have been crossed"

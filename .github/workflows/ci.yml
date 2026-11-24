@@ -18,3 +18,29 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm test
+      - name: Verify published benchmark tables and charts
+        run: |
+          python3 benchmarks/summarize.py benchmarks/results/2026-11-24-matrix
+          python3 docs/images/generate-comparison.py
+          git diff --exit-code -- benchmarks/results/2026-11-24-matrix/comparison.json benchmarks/results/2026-11-24-matrix/comparison.md benchmarks/results/2026-11-24-matrix/compact.md docs/images/controlled-latency.svg docs/images/controlled-summary.svg
+
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the real stack
+        run: docker compose -p api-scaling-ci up -d --build --wait --scale api=3
+      - name: Check health and run the CRUD smoke workload
+        run: |
+          curl --fail --retry 5 --retry-delay 2 http://127.0.0.1:3000/health
+          docker run --rm --network api-scaling-ci_default \
+            -v "$GITHUB_WORKSPACE/loadtest:/scripts:ro" \
+            -e BASE_URL=http://nginx -e SMOKE=true \
+            grafana/k6 run --no-color /scripts/baseline.js
+      - name: Retain service logs on failure
+        if: failure()
+        run: docker compose -p api-scaling-ci logs --no-color
+      - name: Stop the CI stack
+        if: always()
+        run: docker compose -p api-scaling-ci down --volumes

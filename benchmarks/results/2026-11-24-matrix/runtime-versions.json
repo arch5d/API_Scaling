@@ -1,0 +1,22 @@
+{
+  "node": {
+    "exit_code": 0,
+    "output": "v22.23.5"
+  },
+  "postgres": {
+    "exit_code": 0,
+    "output": "postgres (PostgreSQL) 16.15 (Debian 16.15-1.pgdg13+2)"
+  },
+  "redis": {
+    "exit_code": 0,
+    "output": "Redis server v=7.4.11 sha=00000000:0 malloc=jemalloc-5.3.0 bits=64 build=fbf7a7d03c2e9219"
+  },
+  "pgbouncer": {
+    "exit_code": 0,
+    "output": "PgBouncer 1.26.1\nlibevent 2.1.13-stable\nadns: evdns2\ntls: OpenSSL 3.5.8 25 Aug 2026"
+  },
+  "nginx": {
+    "exit_code": 0,
+    "output": "nginx version: nginx/1.27.5"
+  }
+}

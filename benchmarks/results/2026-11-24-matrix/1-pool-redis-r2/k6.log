@@ -1,0 +1,46 @@
+
+
+  █ THRESHOLDS 
+
+    dropped_iterations
+    ✓ 'count==0' count=0
+
+    http_req_duration
+    ✓ 'p(95)<250' p(95)=13.62ms
+    ✓ 'p(99)<500' p(99)=42.05ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 176399  735.0861/s
+    checks_succeeded...: 100.00% 176399 out of 176399
+    checks_failed......: 0.00%   0 out of 176399
+
+    ✓ status is successful
+
+    CUSTOM
+    article_cache_hits.............: 140091 583.784187/s
+    article_cache_misses...........: 1252   5.217307/s
+
+    HTTP
+    http_req_duration..............: avg=4.35ms min=101.19µs med=2.12ms max=243.91ms p(90)=7.65ms p(95)=13.62ms p(99)=42.05ms
+      { expected_response:true }...: avg=4.35ms min=101.19µs med=2.12ms max=243.91ms p(90)=7.65ms p(95)=13.62ms p(99)=42.05ms
+    http_req_failed................: 0.00%  0 out of 178286
+    http_reqs......................: 178286 742.949566/s
+
+    EXECUTION
+    dropped_iterations.............: 0      0/s
+    iteration_duration.............: avg=4.67ms min=580.22µs med=2.38ms max=282.32ms p(90)=8.34ms p(95)=14.42ms p(99)=43.11ms
+    iterations.....................: 176399 735.0861/s
+    vus............................: 0      min=0           max=103
+    vus_max........................: 300    min=300         max=300
+
+    NETWORK
+    data_received..................: 173 MB 721 kB/s
+    data_sent......................: 15 MB  61 kB/s
+
+
+

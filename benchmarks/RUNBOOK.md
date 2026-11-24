@@ -2,6 +2,43 @@
 
 Run these PowerShell commands from the repository root with Docker Compose. Tests create and update articles; deletes create their own target. Use a disposable benchmark database.
 
+## Controlled comparison matrix
+
+The isolated matrix resets only the `api-scaling-bench` project's database and Redis. It exposes no host ports and does not use the development project's volume. Requires Python 3, PowerShell and Docker Desktop on Windows:
+
+```powershell
+python benchmarks/run_matrix.py --output my-new-matrix --repeats 2 --plateau 2m
+python benchmarks/summarize.py benchmarks/results/my-new-matrix
+```
+
+Choose a new output directory for every attempt. The runner refuses to overwrite one. Expect about 40 minutes plus setup for ten four-minute tests. It builds once, restores 100,000 seed rows, flushes Redis, recreates/restarts APIs as needed, verifies replica count and cache state, and restarts NGINX before each run. PostgreSQL and the host filesystem cache are not made cold; Redis starts empty. The second pass reverses the first pass's order.
+
+The five configurations isolate these steps at a fixed offered workload:
+
+1. One API, direct PostgreSQL, Redis disabled with `CACHE_ENABLED=false`.
+2. One API, direct PostgreSQL, Redis enabled.
+3. One API, PgBouncer, Redis enabled.
+4. Three APIs, PgBouncer, Redis enabled.
+5. Eight APIs, PgBouncer, Redis enabled.
+
+All use the same Compose-network NGINX path, API image, DB pool limit, skewed read distribution, 300 preallocated / 1,000 maximum VUs, and 8-CPU / 8-GiB k6 container limits. A fixed random seed stabilizes per-VU choices, but changing VU scheduling can still change the aggregate request trace. RPS and percentiles include ramps, so a two-minute plateau produces a lower whole-run average than a ten-minute plateau at the same offered rate.
+
+Each run saves `k6.log`, `summary.json`, `run.json` (including exit code and command), and `resources.jsonl`. Resource observations sample Docker stats, PostgreSQL connections and `SHOW POOLS` roughly every 15 seconds plus observation time. They add shared-host overhead and are snapshots, not continuous maxima. The environment file records the source revision, source hashes, host/VM resources and image identities. Failed thresholds are retained and do not stop later configurations; setup failures stop the runner. Confirm the environment's `finished_utc` and all ten completed run records before treating the matrix as complete.
+
+For a longer confirmation of one configuration:
+
+```powershell
+python benchmarks/run_matrix.py --output my-new-soak --only 8-pool-redis --repeats 1 --plateau 10m
+```
+
+The runner stops its services when the matrix finishes and keeps its disposable volume. To stop an interrupted run's stack without deleting its data:
+
+```powershell
+docker compose -f benchmarks/compose.yml stop
+```
+
+Historical commands below target the development Compose project; do not mix those commands into an active isolated matrix run.
+
 ## Prepare
 
 ```powershell

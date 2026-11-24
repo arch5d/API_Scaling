@@ -2,6 +2,8 @@
 
 This is the historical experiment record. Raw logs are retained unchanged, including failed and incomplete runs. Workload arrival rate and HTTP throughput are different units.
 
+For fresh measurements with captured hardware, source provenance, and controlled cache/pool/replica comparisons, see the [24 November experiment](CURRENT.md). The missing historical measurements below remain missing; new runs are not substitutes for historical evidence.
+
 ## Accepted long runs
 
 Both runs configured a ten-minute plateau at 1,000 iterations/second, with 90 seconds of ramp-up and 30 seconds of cooldown. Percentiles cover the entire run. Each iteration makes one request except the create-then-delete branch, which makes two when creation succeeds.

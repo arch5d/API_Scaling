@@ -1,0 +1,47 @@
+
+
+  █ THRESHOLDS 
+
+    dropped_iterations
+    ✗ 'count==0' count=458
+
+    http_req_duration
+    ✓ 'p(95)<250' p(95)=12.34ms
+    ✓ 'p(99)<500' p(99)=93.59ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 175941  733.163329/s
+    checks_succeeded...: 100.00% 175941 out of 175941
+    checks_failed......: 0.00%   0 out of 175941
+
+    ✓ status is successful
+
+    CUSTOM
+    article_cache_hits.............: 139414 580.951753/s
+    article_cache_misses...........: 1304   5.433895/s
+
+    HTTP
+    http_req_duration..............: avg=9.18ms min=-1236733ns med=2.06ms max=3.48s p(90)=7.06ms p(95)=12.34ms p(99)=93.59ms
+      { expected_response:true }...: avg=9.18ms min=-1236733ns med=2.06ms max=3.48s p(90)=7.06ms p(95)=12.34ms p(99)=93.59ms
+    http_req_failed................: 0.00%  0 out of 177719
+    http_reqs......................: 177719 740.572429/s
+
+    EXECUTION
+    dropped_iterations.............: 458    1.908531/s
+    iteration_duration.............: avg=9.58ms min=606.34µs   med=2.32ms max=3.51s p(90)=7.7ms  p(95)=13.07ms p(99)=96.54ms
+    iterations.....................: 175941 733.163329/s
+    vus............................: 0      min=0           max=327
+    vus_max........................: 386    min=300         max=386
+
+    NETWORK
+    data_received..................: 174 MB 724 kB/s
+    data_sent......................: 15 MB  61 kB/s
+
+
+
+time="2026-11-24T06:43:29Z" level=error msg="thresholds on metrics 'dropped_iterations' have been crossed"

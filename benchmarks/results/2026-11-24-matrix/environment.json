@@ -1,0 +1,68 @@
+{
+  "started_utc": "2026-11-24T06:34:19.593348+00:00",
+  "source_commit": "721dfeccf9b70e294dad48e94912a1688d67ebe7",
+  "working_tree": "",
+  "plateau": "2m",
+  "repeats": 2,
+  "path": "k6 container -> Compose nginx -> API",
+  "docker": {
+    "NCPU": 12,
+    "MemTotal": 12389138432,
+    "ServerVersion": "29.5.3",
+    "OperatingSystem": "Docker Desktop",
+    "Architecture": "x86_64",
+    "KernelVersion": "6.6.87.2-microsoft-standard-WSL2"
+  },
+  "compose_version": "Docker Compose version v5.1.4",
+  "host": "{\n    \"cpu\":  {\n                \"Name\":  \"12th Gen Intel(R) Core(TM) i5-12450HX\",\n                \"NumberOfCores\":  8,\n                \"NumberOfLogicalProcessors\":  12\n            },\n    \"ramBytes\":  25463480320\n}",
+  "source_hashes": {
+    "src/app.js": "8eabb663bbfebee56cac7163cfbe1a7b53035882ed6bbb763f375aa90701ca66",
+    "src/server.js": "3e7fba97f9cd452d1dd4cb873ce5121f7ec674fce121a2aa055015ffa85ccc41",
+    "loadtest/baseline.js": "5f38e332ad706622c631091be020cabcb2504713ecfd8199ce93fd95ca3d7f5d",
+    "benchmarks/compose.yml": "97ed97bd67eee05f825d0c8978668818060e141b086e390d406a6047f3bdc8ce",
+    "nginx.conf": "4278606a37b979d79e5128e5d91b09d9338c7dd3cf68b60eca64ad50f2ef3cb5",
+    "db/seed.sql": "602e7940a0912e4fb0215562e0d20afbd4b37f9123bb7548ec47ff2cfc550db2",
+    "db/schema.sql": "ea87e200f28db1d683f1f8942d05db58133e08f0e17a48d22d8b3ecedbc6ef25",
+    "package-lock.json": "09688579177a70a0fb70c2db16f9ac52b15a2df2aacb09a31805e40663d043ae"
+  },
+  "k6_version": "k6 v2.2.0 (commit/00a9a1b7f5, go1.26.5, linux/amd64)",
+  "images": {
+    "api-scaling-bench-api": {
+      "id": "sha256:3d38d22b694006fc2a1797ccf2dd7f93fcef028d7635c1545d38021ddc93b913",
+      "digests": [
+        "api-scaling-bench-api@sha256:3d38d22b694006fc2a1797ccf2dd7f93fcef028d7635c1545d38021ddc93b913"
+      ]
+    },
+    "postgres:16": {
+      "id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "digests": [
+        "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+      ]
+    },
+    "redis:7-alpine": {
+      "id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "digests": [
+        "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+      ]
+    },
+    "edoburu/pgbouncer:latest": {
+      "id": "sha256:8638aa563607256d3c7440437534195f1066a92b68015d89ae9d6b935b444a6d",
+      "digests": [
+        "edoburu/pgbouncer@sha256:8638aa563607256d3c7440437534195f1066a92b68015d89ae9d6b935b444a6d"
+      ]
+    },
+    "nginx:1.27-alpine": {
+      "id": "sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10",
+      "digests": [
+        "nginx@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10"
+      ]
+    },
+    "grafana/k6:latest": {
+      "id": "sha256:5221b620a4f874faff6e32ba597aa667c058391fe4898b1c6f6377f062c6cdec",
+      "digests": [
+        "grafana/k6@sha256:5221b620a4f874faff6e32ba597aa667c058391fe4898b1c6f6377f062c6cdec"
+      ]
+    }
+  },
+  "finished_utc": "2026-11-24T07:18:24.779523+00:00"
+}

@@ -1,0 +1,49 @@
+#1 [internal] load local bake definitions
+#1 reading from stdin 513B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 191B 0.0s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/node:22-alpine
+#3 DONE 3.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 101B 0.0s done
+#4 DONE 0.0s
+
+#5 [1/5] FROM docker.io/library/node:22-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a
+#5 resolve docker.io/library/node:22-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 24.07kB 0.1s done
+#6 DONE 0.1s
+
+#7 [2/5] WORKDIR /app
+#7 CACHED
+
+#8 [3/5] COPY package*.json ./
+#8 CACHED
+
+#9 [4/5] RUN npm ci --omit=dev
+#9 CACHED
+
+#10 [5/5] COPY src ./src
+#10 DONE 0.1s
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 0.2s done
+#11 exporting manifest sha256:85a5663ed200d5ec3c16992e6c702654597176327969e294ca0e2e5b648cd7f2 0.0s done
+#11 exporting config sha256:f4e0296f1afc986d0bd329c037829e1b4137c5321e34bd099012af2a9bc9681f 0.0s done
+#11 exporting attestation manifest sha256:bd3e0747b5100346152509b7ecdb669e7a9f7723231d00c0dec065d81b6da89b 0.1s done
+#11 exporting manifest list sha256:3d38d22b694006fc2a1797ccf2dd7f93fcef028d7635c1545d38021ddc93b913
+#11 exporting manifest list sha256:3d38d22b694006fc2a1797ccf2dd7f93fcef028d7635c1545d38021ddc93b913 0.0s done
+#11 naming to docker.io/library/api-scaling-bench-api:latest done
+#11 unpacking to docker.io/library/api-scaling-bench-api:latest 0.1s done
+#11 DONE 0.5s
+
+#12 resolving provenance for metadata file
+#12 DONE 0.1s

@@ -1,6 +1,7 @@
+param([string]$Manifest = 'drawing.json')
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
-$pages = Get-Content -Raw (Join-Path $PSScriptRoot 'drawing.json') | ConvertFrom-Json
+$pages = Get-Content -Raw (Join-Path $PSScriptRoot $Manifest) | ConvertFrom-Json
 foreach ($page in $pages.PSObject.Properties) {
     $bitmap = New-Object System.Drawing.Bitmap 1600,900
     $graphics = [System.Drawing.Graphics]::FromImage($bitmap)

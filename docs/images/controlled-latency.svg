@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img">
+<title>controlled latency</title>
+<rect x="0" y="0" width="1600" height="900" fill="#101827"/>
+<text x="70" y="91" font-family="Arial, sans-serif" font-size="46" fill="#f5f8ff">Redis, pooling and replicas: measured latency</text>
+<text x="70" y="140" font-family="Arial, sans-serif" font-size="25" fill="#aebed5">24 Nov 2026 | two runs per configuration | same code, workload and Compose network</text>
+<text x="470" y="207" font-family="Arial, sans-serif" font-size="32" fill="#65ddc0">p95 (ms)</text>
+<line x1="470.0" y1="235" x2="470.0" y2="700" stroke="#293b54" stroke-width="3"/>
+<text x="462.0" y="229" font-family="Arial, sans-serif" font-size="19" fill="#aebed5">1</text>
+<line x1="613.3333333333333" y1="235" x2="613.3333333333333" y2="700" stroke="#293b54" stroke-width="3"/>
+<text x="605.3333333333333" y="229" font-family="Arial, sans-serif" font-size="19" fill="#aebed5">10</text>
+<line x1="756.6666666666666" y1="235" x2="756.6666666666666" y2="700" stroke="#293b54" stroke-width="3"/>
+<text x="748.6666666666666" y="229" font-family="Arial, sans-serif" font-size="19" fill="#aebed5">100</text>
+<line x1="900.0" y1="235" x2="900.0" y2="700" stroke="#293b54" stroke-width="3"/>
+<text x="892.0" y="229" font-family="Arial, sans-serif" font-size="19" fill="#aebed5">1000</text>
+<line x1="714.3917823371689" y1="280" x2="734.832266373739" y2="280" stroke="#65ddc0" stroke-width="3"/>
+<rect x="729.832266373739" y="270" width="10" height="10" fill="#65ddc0"/>
+<rect x="709.3917823371689" y="280" width="10" height="10" fill="#65ddc0"/>
+<text x="470" y="319" font-family="Arial, sans-serif" font-size="24" fill="#65ddc0">50.71 - 70.42</text>
+<line x1="626.4390741566382" y1="370" x2="696.2985209068667" y2="370" stroke="#65ddc0" stroke-width="3"/>
+<rect x="621.4390741566382" y="360" width="10" height="10" fill="#65ddc0"/>
+<rect x="691.2985209068667" y="370" width="10" height="10" fill="#65ddc0"/>
+<text x="470" y="409" font-family="Arial, sans-serif" font-size="24" fill="#65ddc0">12.34 - 37.92</text>
+<line x1="571.5161410587134" y1="460" x2="632.601869385913" y2="460" stroke="#65ddc0" stroke-width="3"/>
+<rect x="566.5161410587134" y="450" width="10" height="10" fill="#65ddc0"/>
+<rect x="627.601869385913" y="460" width="10" height="10" fill="#65ddc0"/>
+<text x="470" y="499" font-family="Arial, sans-serif" font-size="24" fill="#65ddc0">5.11 - 13.63</text>
+<line x1="572.6259464214794" y1="550" x2="580.8579468041804" y2="550" stroke="#65ddc0" stroke-width="3"/>
+<rect x="567.6259464214794" y="540" width="10" height="10" fill="#65ddc0"/>
+<rect x="575.8579468041804" y="550" width="10" height="10" fill="#65ddc0"/>
+<text x="470" y="589" font-family="Arial, sans-serif" font-size="24" fill="#65ddc0">5.20 - 5.94</text>
+<line x1="623.8790999360153" y1="640" x2="632.9925567797654" y2="640" stroke="#65ddc0" stroke-width="3"/>
+<rect x="627.9925567797654" y="630" width="10" height="10" fill="#65ddc0"/>
+<rect x="618.8790999360153" y="640" width="10" height="10" fill="#65ddc0"/>
+<text x="470" y="679" font-family="Arial, sans-serif" font-size="24" fill="#65ddc0">11.85 - 13.71</text>
+<text x="1030" y="207" font-family="Arial, sans-serif" font-size="32" fill="#f5ae70">p99 (ms)</text>
+<line x1="1030.0" y1="235" x2="1030.0" y2="700" stroke="#293b54" stroke-width="3"/>
+<text x="1022.0" y="229" font-family="Arial, sans-serif" font-size="19" fill="#aebed5">1</text>
+<line x1="1173.3333333333333" y1="235" x2="1173.3333333333333" y2="700" stroke="#293b54" stroke-width="3"/>
+<text x="1165.3333333333333" y="229" font-family="Arial, sans-serif" font-size="19" fill="#aebed5">10</text>
+<line x1="1316.6666666666665" y1="235" x2="1316.6666666666665" y2="700" stroke="#293b54" stroke-width="3"/>
+<text x="1308.6666666666665" y="229" font-family="Arial, sans-serif" font-size="19" fill="#aebed5">100</text>
+<line x1="1460.0" y1="235" x2="1460.0" y2="700" stroke="#293b54" stroke-width="3"/>
+<text x="1452.0" y="229" font-family="Arial, sans-serif" font-size="19" fill="#aebed5">1000</text>
+<line x1="1323.7455497569613" y1="280" x2="1439.5212257971034" y2="280" stroke="#f5ae70" stroke-width="3"/>
+<rect x="1434.5212257971034" y="270" width="10" height="10" fill="#f5ae70"/>
+<rect x="1318.7455497569613" y="280" width="10" height="10" fill="#f5ae70"/>
+<text x="1030" y="319" font-family="Arial, sans-serif" font-size="24" fill="#f5ae70">112.04 - 719.66</text>
+<line x1="1312.5434311920321" y1="370" x2="1318.2690604415698" y2="370" stroke="#f5ae70" stroke-width="3"/>
+<rect x="1307.5434311920321" y="360" width="10" height="10" fill="#f5ae70"/>
+<rect x="1313.2690604415698" y="370" width="10" height="10" fill="#f5ae70"/>
+<text x="1030" y="409" font-family="Arial, sans-serif" font-size="24" fill="#f5ae70">93.59 - 102.61</text>
+<line x1="1166.1777624049416" y1="460" x2="1262.7486637404159" y2="460" stroke="#f5ae70" stroke-width="3"/>
+<rect x="1161.1777624049416" y="450" width="10" height="10" fill="#f5ae70"/>
+<rect x="1257.7486637404159" y="460" width="10" height="10" fill="#f5ae70"/>
+<text x="1030" y="499" font-family="Arial, sans-serif" font-size="24" fill="#f5ae70">8.91 - 42.06</text>
+<line x1="1171.0111074306408" y1="550" x2="1180.3969262331302" y2="550" stroke="#f5ae70" stroke-width="3"/>
+<rect x="1166.0111074306408" y="540" width="10" height="10" fill="#f5ae70"/>
+<rect x="1175.3969262331302" y="550" width="10" height="10" fill="#f5ae70"/>
+<text x="1030" y="589" font-family="Arial, sans-serif" font-size="24" fill="#f5ae70">9.63 - 11.20</text>
+<line x1="1275.5212425717164" y1="640" x2="1281.4070292811195" y2="640" stroke="#f5ae70" stroke-width="3"/>
+<rect x="1276.4070292811195" y="630" width="10" height="10" fill="#f5ae70"/>
+<rect x="1270.5212425717164" y="640" width="10" height="10" fill="#f5ae70"/>
+<text x="1030" y="679" font-family="Arial, sans-serif" font-size="24" fill="#f5ae70">51.63 - 56.75</text>
+<text x="70" y="287" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">1 replica, no cache</text>
+<text x="70" y="318" font-family="Arial, sans-serif" font-size="22" fill="#aebed5">Direct PostgreSQL</text>
+<text x="70" y="377" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">1 replica + Redis</text>
+<text x="70" y="408" font-family="Arial, sans-serif" font-size="22" fill="#aebed5">Direct PostgreSQL</text>
+<text x="70" y="467" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">1 replica + Redis</text>
+<text x="70" y="498" font-family="Arial, sans-serif" font-size="22" fill="#aebed5">With PgBouncer</text>
+<text x="70" y="557" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">3 replicas + Redis</text>
+<text x="70" y="588" font-family="Arial, sans-serif" font-size="22" fill="#aebed5">With PgBouncer</text>
+<text x="70" y="647" font-family="Arial, sans-serif" font-size="27" fill="#f5f8ff">8 replicas + Redis</text>
+<text x="70" y="678" font-family="Arial, sans-serif" font-size="22" fill="#aebed5">With PgBouncer</text>
+<text x="70" y="764" font-family="Arial, sans-serif" font-size="24" fill="#f5f8ff">Logarithmic axes. Markers show individual runs; lines show observed ranges, not confidence intervals.</text>
+<text x="70" y="809" font-family="Arial, sans-serif" font-size="24" fill="#aebed5">Whole-run latency includes ramps. Two-minute plateau at 1,000 iterations/s; failures retained.</text>
+<text x="70" y="854" font-family="Arial, sans-serif" font-size="24" fill="#aebed5">Shared Docker host: 12 logical CPUs / 11.54 GiB. Timing anomalies and raw results are documented.</text>
+</svg>

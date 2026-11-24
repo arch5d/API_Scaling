@@ -1,14 +1,16 @@
 # Shareable visuals
 
-All three images are 1600 × 900. They use repository code and retained benchmark evidence, with no invented dashboard or measurements.
+All images are 1600 × 900. They use repository code and retained benchmark evidence, with no invented dashboard or measurements.
 
-| Image           | Exact content                                                                                                                                                                                                          | Downloads                                                                |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Architecture    | Client/k6 → NGINX → Fastify replicas; Fastify → Redis and PgBouncer → PostgreSQL. Note cache TTL, DB pool size, list/write behavior and shared host.                                                                   | [PNG](images/architecture.png), [SVG](images/architecture.svg)           |
-| Cache hit chart | One stacked bar: 522,009 hits and 2,848 misses, 99.46% hits. Denominator is recorded HIT/MISS responses, not all requests.                                                                                             | [PNG](images/cache-hit-rate.png), [SVG](images/cache-hit-rate.svg)       |
-| k6 summary card | Eight-replica accepted run: 921.10 HTTP RPS whole-run average, 1,000 iterations/s configured plateau, 11.70 ms p95, 27.95 ms p99, 0/663,132 failed requests, zero drops. State network path and missing VM allocation. | [PNG](images/benchmark-summary.png), [SVG](images/benchmark-summary.svg) |
+| Image                           | Exact content                                                                                                                                                                                                          | Downloads                                                                  |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Controlled latency              | p95 and p99 ranges for all five configurations, showing both repetitions on logarithmic axes. Values are derived from the completed November 24 matrix.                                                                | [PNG](images/controlled-latency.png), [SVG](images/controlled-latency.svg) |
+| Controlled summary              | Four comparison cards with observed p95 ranges, threshold passes, absolute HTTP failures and dropped iterations. The README contains the full five-configuration table.                                                | [PNG](images/controlled-summary.png), [SVG](images/controlled-summary.svg) |
+| Architecture                    | Client/k6 → NGINX → Fastify replicas; Fastify → Redis and PgBouncer → PostgreSQL. Note cache TTL, DB pool size, list/write behavior and shared host.                                                                   | [PNG](images/architecture.png), [SVG](images/architecture.svg)             |
+| Historical cache chart (Nov 19) | One stacked bar: 522,009 hits and 2,848 misses, 99.46% hits. Denominator is recorded HIT/MISS responses, not all requests.                                                                                             | [PNG](images/cache-hit-rate.png), [SVG](images/cache-hit-rate.svg)         |
+| Historical summary (Nov 19)     | Eight-replica accepted run: 921.10 HTTP RPS whole-run average, 1,000 iterations/s configured plateau, 11.70 ms p95, 27.95 ms p99, 0/663,132 failed requests, zero drops. State network path and missing VM allocation. | [PNG](images/benchmark-summary.png), [SVG](images/benchmark-summary.svg)   |
 
-The summary card is a formatted evidence image, not a screenshot. Source: [original k6 log](../benchmarks/stress-published-linuxvm-10m.log). No GIF is needed for a static summary.
+Summary cards are formatted evidence images, not screenshots. Current data: [controlled matrix](../benchmarks/CURRENT.md). Historical source: [original k6 log](../benchmarks/stress-published-linuxvm-10m.log). No GIF is needed for a static summary.
 
 ## Regenerate exactly
 
@@ -17,29 +19,20 @@ From the repository root on Windows, using Python 3 and PowerShell:
 ```powershell
 python docs/images/generate.py
 powershell -NoProfile -ExecutionPolicy Bypass -File docs/images/export-png.ps1
-npx.cmd prettier --write docs/images/drawing.json
+python benchmarks/summarize.py benchmarks/results/2026-11-24-matrix
+python docs/images/generate-comparison.py
+powershell -NoProfile -ExecutionPolicy Bypass -File docs/images/export-png.ps1 -Manifest drawing-current.json
+npx.cmd prettier --write docs/images/drawing.json docs/images/drawing-current.json
 ```
 
-Python writes the SVGs and shared drawing manifest; PowerShell uses System.Drawing to export PNGs. No image-generation service or added Python packages are required. Cache counts are parsed from the source log; other labels describe that specific historical run. Update provenance before reusing these images for another run.
+Python writes the SVGs and shared drawing manifest; PowerShell uses System.Drawing to export PNGs. No image-generation service or added Python packages are required. Current comparison values are derived from all ten retained summaries. Historical cache counts are parsed from the original log; other historical labels describe that specific run. Update provenance before reusing these images for another run.
 
 ## If you want an actual terminal screenshot
 
 Open `benchmarks/stress-published-linuxvm-10m.log` in a terminal or editor. Capture the final THRESHOLDS and TOTAL RESULTS blocks, including cache counters, HTTP request counts, latency, dropped iterations and iterations. Keep the filename visible, use a dark background and readable monospace text, and exclude unrelated windows or credentials. Label it “Saved k6 output — 19 November 2026”; do not present it as a fresh run. The generated card already provides a more compact alternative for sharing.
 
-## Repository About and optional release
+## Repository publication
 
-The GitHub connector has no repository-settings or release-write operation, and the local GitHub CLI was not authenticated when these assets were prepared. After signing in with `gh auth login`, apply the requested metadata:
+The repository About description is "Fastify API scaling experiments with Redis caching, PgBouncer pooling, NGINX replicas, and reproducible k6 load tests." Topics: `fastify`, `redis`, `pgbouncer`, `nginx`, `k6`, `load-testing`, `scalability`, `docker`.
 
-```powershell
-gh repo edit arch5d/API_Scaling --description "Fastify API scaling experiments with Redis caching, PgBouncer pooling, NGINX replicas, and reproducible k6 load tests." --add-topic fastify,redis,pgbouncer,nginx,k6,load-testing,scalability,docker
-```
-
-Optional release: first review, commit and push the documentation and images. Then tag that reviewed commit explicitly (replace `REVIEWED_COMMIT_SHA` with its SHA):
-
-```powershell
-git tag -a v1.0.0 REVIEWED_COMMIT_SHA -m "v1.0.0: documented API scaling experiments"
-git push origin v1.0.0
-gh release create v1.0.0 --repo arch5d/API_Scaling --verify-tag --title "v1.0.0 — API scaling experiments" --notes "Fastify, Redis, PgBouncer and NGINX experiment stack, reproducible k6 workload, retained benchmark evidence, and shareable architecture and result visuals. Benchmark limitations and missing controlled baselines are documented in the README."
-```
-
-No release was created as part of preparing these files.
+Use the architecture PNG for the project overview and the controlled-latency PNG for the results post. Keep the date, workload, shared-host limitation and failure counts visible when sharing. The historical images describe a different experiment and should not be presented as the November 24 matrix.

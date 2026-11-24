@@ -1,0 +1,67 @@
+{
+  "config": "3-pool-redis",
+  "repeat": 1,
+  "replicas": 3,
+  "redis": true,
+  "pgbouncer": true,
+  "started_utc": "2026-11-24T06:48:06.169287+00:00",
+  "initial_rows": 100000,
+  "health": [
+    {
+      "status": "ok",
+      "cache": "ready",
+      "pid": 1,
+      "hostname": "68953a2afbb3"
+    },
+    {
+      "status": "ok",
+      "cache": "ready",
+      "pid": 1,
+      "hostname": "a8d5eba29d33"
+    },
+    {
+      "status": "ok",
+      "cache": "ready",
+      "pid": 1,
+      "hostname": "d3523e2bf7b9"
+    }
+  ],
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--name",
+    "api-scaling-bench-k6",
+    "--cpus=8",
+    "--memory=8g",
+    "--network",
+    "api-scaling-bench_default",
+    "-v",
+    "A:\\Placement\\API_scaling\\loadtest:/scripts:ro",
+    "-v",
+    "A:\\Placement\\API_scaling\\benchmarks\\results\\2026-11-24-matrix\\3-pool-redis-r1:/results",
+    "-e",
+    "BASE_URL=http://nginx",
+    "-e",
+    "STRESS=true",
+    "-e",
+    "STRESS_PLATEAU=2m",
+    "-e",
+    "ACCESS_PATTERN=realistic",
+    "-e",
+    "PRE_VUS=300",
+    "-e",
+    "MAX_VUS=1000",
+    "-e",
+    "RANDOM_SEED=20261124",
+    "grafana/k6",
+    "run",
+    "--quiet",
+    "--no-color",
+    "--summary-export=/results/summary.json",
+    "/scripts/baseline.js"
+  ],
+  "finished_utc": "2026-11-24T06:52:09.818976+00:00",
+  "exit_code": 0,
+  "final_rows": 105105
+}

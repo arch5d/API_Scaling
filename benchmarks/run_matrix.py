@@ -14,7 +14,7 @@ import threading
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-COMPOSE = ['docker', 'compose', '-f', str(ROOT / 'benchmarks/compose.yml')]
+COMPOSE = ['docker', 'compose', '--project-name', 'api-scaling-bench', '-f', str(ROOT / 'benchmarks/compose.yml')]
 CONFIGS = [
     ('1-direct-no-cache', 1, False, False),
     ('1-direct-redis', 1, True, False),
@@ -66,7 +66,7 @@ def main():
                 'host': run(['powershell', '-NoProfile', '-Command',
                   "@{cpu=Get-CimInstance Win32_Processor | Select-Object Name,NumberOfCores,NumberOfLogicalProcessors;ramBytes=(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory} | ConvertTo-Json -Depth 3"]),
                 'source_hashes': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in
-                  ['src/app.js', 'src/server.js', 'loadtest/baseline.js', 'benchmarks/compose.yml', 'nginx.conf', 'db/seed.sql', 'db/schema.sql', 'package-lock.json']}}
+                  ['src/app.js', 'src/server.js', 'loadtest/baseline.js', 'benchmarks/compose.yml', 'benchmarks/run_matrix.py', 'Dockerfile', 'nginx.conf', 'db/seed.sql', 'db/schema.sql', 'package-lock.json']}}
     # Publish only resource/version fields, not Docker registry/proxy/host configuration.
     metadata['docker'] = {k: metadata['docker'][k] for k in ['NCPU', 'MemTotal', 'ServerVersion', 'OperatingSystem', 'Architecture', 'KernelVersion']}
     save(out / 'environment.json', metadata)

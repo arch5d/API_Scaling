@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img">
+<title>controlled summary</title>
+<rect x="0" y="0" width="1600" height="900" fill="#101827"/>
+<text x="70" y="91" font-family="Arial, sans-serif" font-size="46" fill="#f5f8ff">API scaling | benchmark highlights</text>
+<text x="70" y="140" font-family="Arial, sans-serif" font-size="25" fill="#aebed5">24 Nov 2026 | 5 configurations, 10 runs | 1,000 iterations/s offered plateau</text>
+<rect x="70" y="230" width="700" height="170" fill="#21324b"/>
+<text x="94" y="279" font-family="Arial, sans-serif" font-size="29" fill="#f5f8ff">1 replica, no cache</text>
+<text x="94" y="328" font-family="Arial, sans-serif" font-size="32" fill="#65ddc0">p95: 50.71 - 70.42 ms</text>
+<text x="94" y="371" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">1/2 passed; 1,117 failed HTTP; 2,091 drops</text>
+<rect x="810" y="230" width="700" height="170" fill="#21324b"/>
+<text x="834" y="279" font-family="Arial, sans-serif" font-size="29" fill="#f5f8ff">1 replica + Redis</text>
+<text x="834" y="328" font-family="Arial, sans-serif" font-size="32" fill="#65ddc0">p95: 12.34 - 37.92 ms</text>
+<text x="834" y="371" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">0/2 passed; 0 failed HTTP; 465 drops</text>
+<rect x="70" y="435" width="700" height="170" fill="#21324b"/>
+<text x="94" y="484" font-family="Arial, sans-serif" font-size="29" fill="#f5f8ff">1 replica + Redis + PgBouncer</text>
+<text x="94" y="533" font-family="Arial, sans-serif" font-size="32" fill="#65ddc0">p95: 5.11 - 13.63 ms</text>
+<text x="94" y="576" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">2/2 passed; 0 failed HTTP; 0 drops</text>
+<rect x="810" y="435" width="700" height="170" fill="#21324b"/>
+<text x="834" y="484" font-family="Arial, sans-serif" font-size="29" fill="#f5f8ff">8 replicas + Redis + PgBouncer</text>
+<text x="834" y="533" font-family="Arial, sans-serif" font-size="32" fill="#65ddc0">p95: 11.85 - 13.71 ms</text>
+<text x="834" y="576" font-family="Arial, sans-serif" font-size="23" fill="#aebed5">2/2 passed; 0 failed HTTP; 0 drops</text>
+<text x="70" y="686" font-family="Arial, sans-serif" font-size="26" fill="#f5f8ff">Ranges cover both repetitions. HTTP errors and drops are summed across the pair.</text>
+<text x="70" y="736" font-family="Arial, sans-serif" font-size="26" fill="#aebed5">Fixed offered load; this does not measure maximum capacity or prove linear scaling.</text>
+<text x="70" y="786" font-family="Arial, sans-serif" font-size="26" fill="#aebed5">12 logical CPUs / 11.54 GiB Docker RAM; k6 shares the host with the API stack.</text>
+<text x="70" y="853" font-family="Arial, sans-serif" font-size="23" fill="#65ddc0">Evidence: benchmarks/results/2026-11-24-matrix | full five-configuration table in README</text>
+</svg>

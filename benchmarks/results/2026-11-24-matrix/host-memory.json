@@ -1,0 +1,7 @@
+{
+  "captured_utc": "2026-11-24T07:09:47Z",
+  "installed_ram_bytes": 25769803776,
+  "windows_reported_physical_memory_bytes": 25463480320,
+  "installed_ram_command": "(Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum",
+  "windows_memory_source": "environment.json host.ramBytes (Win32_ComputerSystem.TotalPhysicalMemory)"
+}

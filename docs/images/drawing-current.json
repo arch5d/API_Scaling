@@ -1,0 +1,782 @@
+{
+  "controlled-latency": [
+    {
+      "kind": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 1600,
+      "h": 900,
+      "color": "#101827"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 45,
+      "value": "Redis, pooling and replicas: measured latency",
+      "size": 46,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 115,
+      "value": "24 Nov 2026 | two runs per configuration | same code, workload and Compose network",
+      "size": 25,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 470,
+      "y": 175,
+      "value": "p95 (ms)",
+      "size": 32,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "line",
+      "x": 470.0,
+      "y": 235,
+      "xx": 470.0,
+      "yy": 700,
+      "color": "#293b54"
+    },
+    {
+      "kind": "text",
+      "x": 462.0,
+      "y": 210,
+      "value": "1",
+      "size": 19,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "line",
+      "x": 613.3333333333333,
+      "y": 235,
+      "xx": 613.3333333333333,
+      "yy": 700,
+      "color": "#293b54"
+    },
+    {
+      "kind": "text",
+      "x": 605.3333333333333,
+      "y": 210,
+      "value": "10",
+      "size": 19,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "line",
+      "x": 756.6666666666666,
+      "y": 235,
+      "xx": 756.6666666666666,
+      "yy": 700,
+      "color": "#293b54"
+    },
+    {
+      "kind": "text",
+      "x": 748.6666666666666,
+      "y": 210,
+      "value": "100",
+      "size": 19,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "line",
+      "x": 900.0,
+      "y": 235,
+      "xx": 900.0,
+      "yy": 700,
+      "color": "#293b54"
+    },
+    {
+      "kind": "text",
+      "x": 892.0,
+      "y": 210,
+      "value": "1000",
+      "size": 19,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "line",
+      "x": 714.3917823371689,
+      "y": 280,
+      "xx": 734.832266373739,
+      "yy": 280,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 729.832266373739,
+      "y": 270,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 709.3917823371689,
+      "y": 280,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 470,
+      "y": 295,
+      "value": "50.71 - 70.42",
+      "size": 24,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "line",
+      "x": 626.4390741566382,
+      "y": 370,
+      "xx": 696.2985209068667,
+      "yy": 370,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 621.4390741566382,
+      "y": 360,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 691.2985209068667,
+      "y": 370,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 470,
+      "y": 385,
+      "value": "12.34 - 37.92",
+      "size": 24,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "line",
+      "x": 571.5161410587134,
+      "y": 460,
+      "xx": 632.601869385913,
+      "yy": 460,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 566.5161410587134,
+      "y": 450,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 627.601869385913,
+      "y": 460,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 470,
+      "y": 475,
+      "value": "5.11 - 13.63",
+      "size": 24,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "line",
+      "x": 572.6259464214794,
+      "y": 550,
+      "xx": 580.8579468041804,
+      "yy": 550,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 567.6259464214794,
+      "y": 540,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 575.8579468041804,
+      "y": 550,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 470,
+      "y": 565,
+      "value": "5.20 - 5.94",
+      "size": 24,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "line",
+      "x": 623.8790999360153,
+      "y": 640,
+      "xx": 632.9925567797654,
+      "yy": 640,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 627.9925567797654,
+      "y": 630,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "rect",
+      "x": 618.8790999360153,
+      "y": 640,
+      "w": 10,
+      "h": 10,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 470,
+      "y": 655,
+      "value": "11.85 - 13.71",
+      "size": 24,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 1030,
+      "y": 175,
+      "value": "p99 (ms)",
+      "size": 32,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "line",
+      "x": 1030.0,
+      "y": 235,
+      "xx": 1030.0,
+      "yy": 700,
+      "color": "#293b54"
+    },
+    {
+      "kind": "text",
+      "x": 1022.0,
+      "y": 210,
+      "value": "1",
+      "size": 19,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "line",
+      "x": 1173.3333333333333,
+      "y": 235,
+      "xx": 1173.3333333333333,
+      "yy": 700,
+      "color": "#293b54"
+    },
+    {
+      "kind": "text",
+      "x": 1165.3333333333333,
+      "y": 210,
+      "value": "10",
+      "size": 19,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "line",
+      "x": 1316.6666666666665,
+      "y": 235,
+      "xx": 1316.6666666666665,
+      "yy": 700,
+      "color": "#293b54"
+    },
+    {
+      "kind": "text",
+      "x": 1308.6666666666665,
+      "y": 210,
+      "value": "100",
+      "size": 19,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "line",
+      "x": 1460.0,
+      "y": 235,
+      "xx": 1460.0,
+      "yy": 700,
+      "color": "#293b54"
+    },
+    {
+      "kind": "text",
+      "x": 1452.0,
+      "y": 210,
+      "value": "1000",
+      "size": 19,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "line",
+      "x": 1323.7455497569613,
+      "y": 280,
+      "xx": 1439.5212257971034,
+      "yy": 280,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1434.5212257971034,
+      "y": 270,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1318.7455497569613,
+      "y": 280,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "text",
+      "x": 1030,
+      "y": 295,
+      "value": "112.04 - 719.66",
+      "size": 24,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "line",
+      "x": 1312.5434311920321,
+      "y": 370,
+      "xx": 1318.2690604415698,
+      "yy": 370,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1307.5434311920321,
+      "y": 360,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1313.2690604415698,
+      "y": 370,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "text",
+      "x": 1030,
+      "y": 385,
+      "value": "93.59 - 102.61",
+      "size": 24,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "line",
+      "x": 1166.1777624049416,
+      "y": 460,
+      "xx": 1262.7486637404159,
+      "yy": 460,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1161.1777624049416,
+      "y": 450,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1257.7486637404159,
+      "y": 460,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "text",
+      "x": 1030,
+      "y": 475,
+      "value": "8.91 - 42.06",
+      "size": 24,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "line",
+      "x": 1171.0111074306408,
+      "y": 550,
+      "xx": 1180.3969262331302,
+      "yy": 550,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1166.0111074306408,
+      "y": 540,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1175.3969262331302,
+      "y": 550,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "text",
+      "x": 1030,
+      "y": 565,
+      "value": "9.63 - 11.20",
+      "size": 24,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "line",
+      "x": 1275.5212425717164,
+      "y": 640,
+      "xx": 1281.4070292811195,
+      "yy": 640,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1276.4070292811195,
+      "y": 630,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "rect",
+      "x": 1270.5212425717164,
+      "y": 640,
+      "w": 10,
+      "h": 10,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "text",
+      "x": 1030,
+      "y": 655,
+      "value": "51.63 - 56.75",
+      "size": 24,
+      "color": "#f5ae70"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 260,
+      "value": "1 replica, no cache",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 296,
+      "value": "Direct PostgreSQL",
+      "size": 22,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 350,
+      "value": "1 replica + Redis",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 386,
+      "value": "Direct PostgreSQL",
+      "size": 22,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 440,
+      "value": "1 replica + Redis",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 476,
+      "value": "With PgBouncer",
+      "size": 22,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 530,
+      "value": "3 replicas + Redis",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 566,
+      "value": "With PgBouncer",
+      "size": 22,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 620,
+      "value": "8 replicas + Redis",
+      "size": 27,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 656,
+      "value": "With PgBouncer",
+      "size": 22,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 740,
+      "value": "Logarithmic axes. Markers show individual runs; lines show observed ranges, not confidence intervals.",
+      "size": 24,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 785,
+      "value": "Whole-run latency includes ramps. Two-minute plateau at 1,000 iterations/s; failures retained.",
+      "size": 24,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 830,
+      "value": "Shared Docker host: 12 logical CPUs / 11.54 GiB. Timing anomalies and raw results are documented.",
+      "size": 24,
+      "color": "#aebed5"
+    }
+  ],
+  "controlled-summary": [
+    {
+      "kind": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 1600,
+      "h": 900,
+      "color": "#101827"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 45,
+      "value": "API scaling | benchmark highlights",
+      "size": 46,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 115,
+      "value": "24 Nov 2026 | 5 configurations, 10 runs | 1,000 iterations/s offered plateau",
+      "size": 25,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "rect",
+      "x": 70,
+      "y": 230,
+      "w": 700,
+      "h": 170,
+      "color": "#21324b"
+    },
+    {
+      "kind": "text",
+      "x": 94,
+      "y": 250,
+      "value": "1 replica, no cache",
+      "size": 29,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 94,
+      "y": 296,
+      "value": "p95: 50.71 - 70.42 ms",
+      "size": 32,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 94,
+      "y": 348,
+      "value": "1/2 passed; 1,117 failed HTTP; 2,091 drops",
+      "size": 23,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "rect",
+      "x": 810,
+      "y": 230,
+      "w": 700,
+      "h": 170,
+      "color": "#21324b"
+    },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 250,
+      "value": "1 replica + Redis",
+      "size": 29,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 296,
+      "value": "p95: 12.34 - 37.92 ms",
+      "size": 32,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 348,
+      "value": "0/2 passed; 0 failed HTTP; 465 drops",
+      "size": 23,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "rect",
+      "x": 70,
+      "y": 435,
+      "w": 700,
+      "h": 170,
+      "color": "#21324b"
+    },
+    {
+      "kind": "text",
+      "x": 94,
+      "y": 455,
+      "value": "1 replica + Redis + PgBouncer",
+      "size": 29,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 94,
+      "y": 501,
+      "value": "p95: 5.11 - 13.63 ms",
+      "size": 32,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 94,
+      "y": 553,
+      "value": "2/2 passed; 0 failed HTTP; 0 drops",
+      "size": 23,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "rect",
+      "x": 810,
+      "y": 435,
+      "w": 700,
+      "h": 170,
+      "color": "#21324b"
+    },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 455,
+      "value": "8 replicas + Redis + PgBouncer",
+      "size": 29,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 501,
+      "value": "p95: 11.85 - 13.71 ms",
+      "size": 32,
+      "color": "#65ddc0"
+    },
+    {
+      "kind": "text",
+      "x": 834,
+      "y": 553,
+      "value": "2/2 passed; 0 failed HTTP; 0 drops",
+      "size": 23,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 660,
+      "value": "Ranges cover both repetitions. HTTP errors and drops are summed across the pair.",
+      "size": 26,
+      "color": "#f5f8ff"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 710,
+      "value": "Fixed offered load; this does not measure maximum capacity or prove linear scaling.",
+      "size": 26,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 760,
+      "value": "12 logical CPUs / 11.54 GiB Docker RAM; k6 shares the host with the API stack.",
+      "size": 26,
+      "color": "#aebed5"
+    },
+    {
+      "kind": "text",
+      "x": 70,
+      "y": 830,
+      "value": "Evidence: benchmarks/results/2026-11-24-matrix | full five-configuration table in README",
+      "size": 23,
+      "color": "#65ddc0"
+    }
+  ]
+}
