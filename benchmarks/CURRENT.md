@@ -50,17 +50,18 @@ Each run directory contains:
 
 `environment.json` records the start/end of the matrix, source provenance and machine information. Resource observations occur roughly every 15 seconds plus command execution time. Sampled PostgreSQL session counts in the comparison data exclude the monitoring query's own connection; they are observations, not continuous maxima or measurements of productive query work.
 
-### Ten-minute confirmation attempt (excluded)
+### Ten-minute confirmation attempts (excluded)
 
-A 10-minute-plateau run of `3-pool-redis` was attempted after the matrix with a fresh 100,000-row dataset. It is retained at [results/2026-11-24-soak](results/2026-11-24-soak) but is **excluded from the README, comparison tables and visuals** because the host was suspended during it.
+Two 10-minute-plateau runs of `3-pool-redis` were attempted after the matrix, each with a fresh 100,000-row dataset. Both are retained — [first attempt](results/2026-11-24-soak) and [repeat](results/2026-11-24-soak-r2) — but neither is used in the README, comparison tables or visuals: the host stalled during both.
 
-The raw files show the anomaly without interpretation:
+| Attempt | Wall clock for a 12-minute schedule | Max `http_req_duration` | Whole-run HTTP RPS | Resource-sampling gap |
+| ------- | ----------------------------------: | ----------------------: | -----------------: | --------------------: |
+| First   | 98 minutes                         | 1h26m5s                 | 112.67             | 5,198.75 s            |
+| Repeat  | 16m15s                             | 4m11s                   | 681.10             | 273.58 s              |
 
-- `run.json`: started `2026-11-24T07:19:25.298723+00:00`, finished `2026-11-24T08:57:31.442978+00:00` — about 98 minutes of wall clock for a 12-minute schedule; exit code 0.
-- `k6.log`: `max=1h26m5s`, `avg=653.64ms`, `http_reqs: 663011 112.670632/s`. All 656,399 planned iterations completed with zero failures and zero drops, but k6 reported them over the stretched interval, so the whole-run RPS and latency are not a sustained-load measurement.
-- `resources.jsonl`: 32 samples spanning 5,864.7 seconds instead of roughly 390 at the intended 15-second cadence, with one 5,198.75-second gap. The sampler slept with the host.
+Both k6 runs exited 0 with zero failed requests, zero drops and passing printed thresholds (first: p95 23.96 ms, p99 89.2 ms; repeat: p95 4.37 ms, p99 9.46 ms). The stalls distort whole-run throughput and add extreme latency outliers, so none of these values is presented as a clean sustained-load measurement. The 32 and 39 resource samples — roughly 390 were expected at the intended 15-second cadence — and the matching gaps corroborate the stalls.
 
-k6's printed thresholds passed, but that result is an artifact of the suspend. No clean 10-minute confirmation run exists in this matrix; the historical ten-minute result in [PROGRESS.md](PROGRESS.md) remains a separate historical record.
+No clean 10-minute confirmation run exists in this matrix; the historical ten-minute result in [PROGRESS.md](PROGRESS.md) remains a separate historical record.
 
 ## Interpretation limits
 

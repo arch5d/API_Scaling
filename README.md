@@ -20,7 +20,7 @@ RPS and percentiles cover each whole four-minute run, including ramps. Ranges sh
 
 An **iteration** chooses one read, list, or write operation; a delete first creates its own target, so 1,000 iterations/s produces approximately 1,010 HTTP requests/s for this mix. The ramps bring the whole-run average to roughly 742 HTTP requests/s when the offered workload is served.
 
-Redis reduced the observed direct-database tail latencies, but did not eliminate dropped iterations. Adding PgBouncer passed both one-replica runs. All three pooled configurations passed both repetitions; **eight replicas had higher tail latency than three at this fixed offered load**. These runs do not find a capacity ceiling or establish linear replica scaling.
+Redis lowered the observed direct-database tail latencies but did not eliminate drops. PgBouncer passed both one-replica repetitions; all pooled configurations passed both. **Eight replicas had higher tail latency than three at this fixed offered load.** These are fixed-load comparisons, not capacity limits.
 
 ![Whole-run p95 and p99 latency ranges for all five configurations, with both repetitions shown](docs/images/controlled-latency.svg)
 
@@ -30,13 +30,9 @@ Redis reduced the observed direct-database tail latencies, but did not eliminate
 
 ## Benchmark machine and limitations
 
-Measured environment: Intel Core i5-12450HX, **8 physical cores / 12 logical processors, 24 GiB installed RAM**. Docker Desktop exposed **12 logical CPUs and 11.54 GiB RAM** (12,389,138,432 bytes). Docker Engine 29.5.3; Node.js 22.23.5; k6 2.2.0. Exact image IDs, source hashes, software versions and resource snapshots accompany the [benchmark evidence](benchmarks/CURRENT.md#environment-and-provenance).
+Measured environment: Intel Core i5-12450HX, **8 physical cores / 12 logical processors, 24 GiB installed RAM**; Docker Desktop exposed **12 logical CPUs and 11.54 GiB RAM**. Docker Engine 29.5.3, Node.js 22.23.5, k6 2.2.0. Exact image IDs, source hashes and resource snapshots accompany the [benchmark evidence](benchmarks/CURRENT.md#environment-and-provenance).
 
-The k6 generator shares the physical machine and Docker VM with the system under test. Its 8-CPU / 8-GiB container limits do not reserve dedicated hardware. Other applications, sampling overhead, warm PostgreSQL/filesystem caches, and run-to-run variation limit generalization. Some raw duration minima are negative in this Docker/WSL environment; summaries are retained unchanged and this timing anomaly limits precision claims.
-
-A ten-minute confirmation attempt is retained but excluded from these results: the host was suspended during it, stretching a 12-minute schedule to 98 minutes and producing a 1h26m maximum request duration. Its raw files and the reason for exclusion are recorded in [CURRENT.md](benchmarks/CURRENT.md#ten-minute-confirmation-attempt-excluded).
-
-The [November 19 results](benchmarks/PROGRESS.md) remain a separate historical record. Their hardware allocation and lost single-instance summaries cannot be reconstructed from these new measurements.
+k6 shares the host and Docker VM with the stack; its 8-CPU / 8-GiB limits do not reserve hardware. Results are two repetitions on a shared development machine, and raw duration minima can be negative in Docker/WSL; originals are unchanged. Both ten-minute confirmation attempts were excluded because the host stalled during them ([details](benchmarks/CURRENT.md#ten-minute-confirmation-attempts-excluded)). The [November 19 results](benchmarks/PROGRESS.md) are a separate historical record.
 
 ## Start the stack
 
@@ -136,15 +132,11 @@ The workload selects 80% single-article reads, 15% list reads, and 5% write oper
 
 ## Scope
 
-This is a scaling experiment with an unauthenticated CRUD API. It has no authorization, TLS termination, rate limiting, or production deployment automation. Cache invalidation is best effort; concurrent reads and writes can return stale data. Recorded runs do not establish linear replica scaling or maximum sustainable throughput.
-
-Failed and incomplete runs remain in the [benchmark record](benchmarks/PROGRESS.md). [MIT licensed](LICENSE).
+This is an unauthenticated scaling experiment, not a production service: no auth, TLS, rate limiting, or high availability. Cache invalidation is best effort, and the measurements establish neither a capacity ceiling nor linear replica scaling. Failed and incomplete runs remain in the [benchmark record](benchmarks/PROGRESS.md). [MIT licensed](LICENSE).
 
 ## What I'd do next
 
-- Repeat on a dedicated Linux host with a separate load generator; test uniform reads and find a maximum sustainable rate with more repetitions.
-- Address stale-read races in best-effort cache invalidation and test concurrent reads/writes across replicas.
-- Evaluate caching for list endpoints, which currently bypass Redis.
-- Add rate limiting and test overload behavior.
-- Remove the single NGINX failure point and evaluate PostgreSQL failover and read replicas; Redis is also a single instance.
-- Optionally add Prometheus and Grafana, scraping each API replica directly: `/metrics` through NGINX samples different processes rather than aggregating them.
+- Repeat on a dedicated host with a separate generator; test uniform reads and find a maximum sustainable rate with more runs.
+- Address stale-read races and concurrent read/write consistency across replicas.
+- Cache list endpoints and test overload behavior.
+- Remove single points of failure (NGINX, Redis, PostgreSQL) and aggregate `/metrics` per replica.
