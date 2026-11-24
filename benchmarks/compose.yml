@@ -1,0 +1,77 @@
+# Dedicated disposable benchmark stack. No host ports or development volumes.
+name: api-scaling-bench
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: api_scaling
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api
+    volumes:
+      - benchmark-postgres:/var/lib/postgresql/data
+      - ../db/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+      - ../db/seed.sql:/docker-entrypoint-initdb.d/002-seed.sql:ro
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'api', '-d', 'api_scaling']
+      interval: 2s
+      timeout: 2s
+      retries: 60
+  redis:
+    image: redis:7-alpine
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    environment:
+      DATABASE_URL: postgres://api:api@postgres:5432/api_scaling
+      LISTEN_PORT: 6432
+      AUTH_TYPE: plain
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 1000
+      DEFAULT_POOL_SIZE: 20
+      MIN_POOL_SIZE: 5
+      RESERVE_POOL_SIZE: 5
+      RESERVE_POOL_TIMEOUT: 3
+      ADMIN_USERS: api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-h', '127.0.0.1', '-p', '6432']
+      interval: 2s
+      timeout: 2s
+      retries: 60
+  api:
+    build:
+      context: ..
+    environment:
+      DATABASE_URL: postgres://api:api@${BENCH_DB_HOST:-pgbouncer}:${BENCH_DB_PORT:-6432}/api_scaling
+      REDIS_URL: redis://redis:6379
+      CACHE_ENABLED: ${BENCH_CACHE_ENABLED:-true}
+      DB_POOL_MAX: 10
+      LOG_LEVEL: warn
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 60
+  nginx:
+    image: nginx:1.27-alpine
+    volumes:
+      - ../nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      api:
+        condition: service_healthy
+volumes:
+  benchmark-postgres:

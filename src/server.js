@@ -2,24 +2,27 @@ import { createClient } from 'redis';
 import { buildApp } from './app.js';
 
 const port = Number(process.env.PORT ?? 3000);
+const useCache = process.env.CACHE_ENABLED !== 'false';
 
 const cache = createClient({ url: process.env.REDIS_URL ?? 'redis://localhost:6379' });
 let app;
 cache.on('error', (error) => app?.log?.warn({ error }, 'redis unavailable'));
 
 let cacheEnabled = false;
-try {
-  await cache.connect();
-  cacheEnabled = true;
-} catch {
-  // cache stays disabled; the app logs this state once it exists
+if (useCache) {
+  try {
+    await cache.connect();
+    cacheEnabled = true;
+  } catch {
+    // cache stays disabled; the app logs this state once it exists
+  }
 }
 
 app = await buildApp({ cache: cacheEnabled ? cache : null });
 if (cacheEnabled) {
   app.log.info('redis cache enabled');
 } else {
-  app.log.warn('redis unavailable; using postgres only');
+  app.log.warn(useCache ? 'redis unavailable; using postgres only' : 'redis disabled; using postgres only');
 }
 
 const shutdown = async (signal) => {

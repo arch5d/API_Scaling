@@ -70,14 +70,15 @@ NGINX resolves API addresses when loading its configuration. Reload or restart N
 
 ## Configuration
 
-| Variable       | Default                  | Purpose                         |
-| -------------- | ------------------------ | ------------------------------- |
-| `DATABASE_URL` | No application default   | PostgreSQL or PgBouncer URL     |
-| `REDIS_URL`    | `redis://localhost:6379` | Redis URL                       |
-| `PORT`         | `3000`                   | Listening port                  |
-| `HOST`         | `0.0.0.0`                | Listening interface             |
-| `DB_POOL_MAX`  | `10`                     | Per-process database pool limit |
-| `LOG_LEVEL`    | `warn`                   | Fastify logger level            |
+| Variable        | Default                  | Purpose                                                              |
+| --------------- | ------------------------ | -------------------------------------------------------------------- |
+| `DATABASE_URL`  | No application default   | PostgreSQL or PgBouncer URL                                          |
+| `REDIS_URL`     | `redis://localhost:6379` | Redis URL                                                            |
+| `CACHE_ENABLED` | `true`                   | Set exactly `false` to skip Redis connection and use PostgreSQL only |
+| `PORT`          | `3000`                   | Listening port                                                       |
+| `HOST`          | `0.0.0.0`                | Listening interface                                                  |
+| `DB_POOL_MAX`   | `10`                     | Per-process database pool limit                                      |
+| `LOG_LEVEL`     | `warn`                   | Fastify logger level                                                 |
 
 Compose sets service environment values explicitly. Editing `.env` alone does not override those values. `.env.example` supports a locally launched Node process.
 

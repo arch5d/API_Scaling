@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, randomSeed } from 'k6';
 import { Counter } from 'k6/metrics';
 
 const baseUrl = __ENV.BASE_URL || 'http://localhost:3000';
@@ -9,6 +9,8 @@ const realisticReads = __ENV.ACCESS_PATTERN === 'realistic';
 const preAllocatedVUs = Number(__ENV.PRE_VUS ?? (stress ? 300 : 50));
 const maxVUs = Number(__ENV.MAX_VUS ?? (stress ? 1000 : 300));
 const stressPlateau = __ENV.STRESS_PLATEAU || '10m';
+// A seed stabilizes each VU's random sequence; scheduling can still change the overall trace.
+if (__ENV.RANDOM_SEED) randomSeed(Number(__ENV.RANDOM_SEED) + __VU);
 const cacheHits = new Counter('article_cache_hits');
 const cacheMisses = new Counter('article_cache_misses');
 const getArticle = { tags: { name: 'get_article' } };
@@ -18,6 +20,7 @@ const updateArticle = { tags: { name: 'update_article' } };
 const deleteArticle = { tags: { name: 'delete_article' } };
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
   scenarios: {
     baseline: {
       executor: 'ramping-arrival-rate',

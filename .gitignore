@@ -4,6 +4,7 @@ node_modules/
 !.env.example
 *.log
 !benchmarks/*.log
+!benchmarks/results/**/*.log
 dist/
 coverage/
 .nyc_output/
